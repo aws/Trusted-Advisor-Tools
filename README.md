@@ -1,8 +1,8 @@
 ## Trusted Advisor Tools
 
-### Overview:
+### Overview
 Trusted Advisor provides real time guidance to help users provision their resources following AWS best practices. You can now create configurable, rule-based events for automated actions based on AWS Trusted Advisor’s library of best-practice checks using Amazon CloudWatch Events.
-The sample functions provided help to automate Trusted Advisor best practices using Amazon Cloudwatch events and AWS Lambda. 
+The sample function provided help to automate Trusted Advisor best practices using Amazon Cloudwatch events and AWS Lambda. 
 
 ### Setup and Usage
 For example, you can automatically stop EC2 instances that have low utilization recommended by Trusted Advisor using Amazon Cloudwatch events and AWS Lambda to reduce cost using the following instructions:
