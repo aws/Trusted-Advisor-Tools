@@ -15,7 +15,7 @@
             "Sid": "Stmt1477680111144",
             "Action": [
                 "ec2:StopInstances",
-                "ec2:DescribeTags",
+                "ec2:DescribeTags"
             ],
             "Effect": "Allow",
             "Resource": "*"
