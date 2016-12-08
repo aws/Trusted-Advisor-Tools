@@ -18,5 +18,5 @@ Documentation on to create a Trusted Advisor Cloudwatch events rule is available
 
 More information about Trusted Advisor is available here: https://aws.amazon.com/premiumsupport/trustedadvisor/
 
-Please note that this is a just an example of how to setup automation with Trusted Advisor, Cloudwatch and Lambda. We recommend testing it and tailoring to your envirnment before using in your production envirnment. 
+Please note that this is a just an example of how to setup automation with Trusted Advisor, Cloudwatch and Lambda. We recommend testing it and tailoring to your environment before using in your production envirnment. 
 

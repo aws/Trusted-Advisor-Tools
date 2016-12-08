@@ -16,10 +16,7 @@ More information about Lambda is available here: http://docs.aws.amazon.com/lamb
 3. Create a Cloudwatch event rule to trigger the Lambda function created in step 2 matching the WARN status and the Low Utilization EC2 Instances Trusted Advisor check. An example of this is highlighted in the sample [Cloudwatch Event Pattern](CloudwatchEventPattern).
 Documentation on to create a Trusted Advisor Cloudwatch events rule is available here: http://docs.aws.amazon.com/awssupport/latest/user/cloudwatch-events-ta.html
 
-
-![Architecture](images/LowUtilizationEC2InstancesArchitecture.jpg)
-
 More information about Trusted Advisor is available here: https://aws.amazon.com/premiumsupport/trustedadvisor/
 
-Please note that this is a just an example of how to setup automation with Trusted Advisor, Cloudwatch and Lambda. We recommend testing it and tailoring to your envirnment before using in your production envirnment. 
+Please note that this is a just an example of how to setup automation with Trusted Advisor, Cloudwatch and Lambda. We recommend testing it and tailoring to your environment before using in your production envirnment. 
 
