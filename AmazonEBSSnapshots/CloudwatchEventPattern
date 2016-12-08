@@ -1,0 +1,16 @@
+{
+  "source": [
+    "aws.trustedadvisor"
+  ],
+  "detail-type": [
+    "Trusted Advisor Check Item Refresh Notification"
+  ],
+  "detail": {
+    "status": [
+      "ERROR"
+    ],
+    "check-name": [
+      "Amazon EBS Snapshots"
+    ]
+  }
+}
