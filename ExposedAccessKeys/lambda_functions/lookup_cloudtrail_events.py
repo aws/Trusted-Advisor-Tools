@@ -4,6 +4,7 @@ import boto3
 
 cloudtrail = boto3.client('cloudtrail')
 
+
 def lambda_handler(event, context):
     username = event['username']
     deleted_key = event['deleted_key']
@@ -26,9 +27,10 @@ def lambda_handler(event, context):
         "resource_types": resource_types
     }
 
+
 def get_events_pages(username, starttime, endtime):
     try:
-        paginator = cloudtrail.get_paginator('lookup_events') 
+        paginator = cloudtrail.get_paginator('lookup_events')
         lookup_events_iterator = paginator.paginate(
             LookupAttributes=[
                 {
@@ -45,6 +47,7 @@ def get_events_pages(username, starttime, endtime):
         print('Unable to retrieve CloudTrail events for user "{}"'.format(username))
         raise(e)
     return lookup_events_iterator
+
 
 def get_events_summaries(events_pages):
     event_name_counter = collections.Counter()

@@ -2,6 +2,7 @@ import boto3
 
 iam = boto3.client('iam')
 
+
 def lambda_handler(event, context):
     details = event['check-item-detail']
     username = details['User Name (IAM or Root)']
@@ -14,6 +15,7 @@ def lambda_handler(event, context):
         "deleted_key": access_key_id,
         "exposed_location": exposed_location
     }
+
 
 def delete_exposed_key_pair(username, access_key_id):
     try:

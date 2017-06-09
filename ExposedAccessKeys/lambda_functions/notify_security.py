@@ -19,6 +19,7 @@ Please ensure your account remains secure by further reviewing the actions taken
 
 sns = boto3.client('sns')
 
+
 def lambda_handler(event, context):
     username = event['username']
     deleted_key = event['deleted_key']
@@ -35,17 +36,20 @@ def lambda_handler(event, context):
     message = generate_msg(username, deleted_key, exposed_location, time_discovered, event_summary, rname_summary, rtype_summary)
     print("Publishing message...")
     publish_msg(subject, message)
-    
+
+
 def generate_summary_str(summary_items):
-    return '\t'+'\n\t'.join('{}: {}'.format(item[0], item[1]) for item in summary_items)
-    
+    return '\t' + '\n\t'.join('{}: {}'.format(item[0], item[1]) for item in summary_items)
+
+
 def generate_msg(username, deleted_key, exposed_location, time_discovered, event_names_summary, resource_names_summary, resource_types_summary):
     message = TEMPLATE.format(time_discovered, deleted_key, username, exposed_location, event_names_summary, resource_names_summary, resource_types_summary)
     return message
-    
+
+
 def publish_msg(subject, message):
     try:
-        response = sns.publish(
+        sns.publish(
             TopicArn=TOPIC_ARN,
             Message=message,
             Subject=subject,
