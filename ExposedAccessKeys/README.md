@@ -6,7 +6,7 @@ This repository contains sample code for all the Lambda functions depicted in th
 
 ![screenshot for instruction](images/Architecture.png)
 
-### Walkthrough of the architecture
+### Walkthrough of the Architecture
 1. An IAM Access Key is inadvertently uploaded to one of the popular code repositories monitored by Trusted Advisor (ex: github)
 1. Trusted Advisor detects the key, triggering a Trusted Advisor Exposed Access Keys CloudWatch Event. AWS also temporarily restricts the API calls the key is able to make.
 1. A configured CloudWatch Events rule matches this event, triggering an execution of the `ExposedKey` state machine, which has the following sub-steps:
@@ -29,7 +29,7 @@ Click **Launch Stack** to launch the template in the US East - N. Virginia (us-e
 1. Click **"Execute"**
 )
 
-#### Option 2: Launch the CloudFormation Template manually 
+#### Option 2: Launch the CloudFormation Template Manually 
 
 If you would like to deploy the template manually, you need a S3 bucket in the target region, and then package the Lambda functions into that S3 bucket by using the `aws cloudformation package` utility.
 
@@ -103,7 +103,7 @@ To remove all resources created by this example, do the following:
 1. Delete the CloudFormation stack.
 1. Delete the CloudWatch log groups associated with each Lambda function created by the CloudFormation stack.
 
-## CloudFormation template resources
+## CloudFormation Template Resources
 
 The following sections explain all of the resources created by the CloudFormation template provided with this example.
 
