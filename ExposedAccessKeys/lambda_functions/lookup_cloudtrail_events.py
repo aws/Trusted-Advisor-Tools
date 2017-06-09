@@ -10,7 +10,7 @@ def lambda_handler(event, context):
     exposed_location = event['exposed_location']
     endtime = datetime.datetime.now()
     endtime_str = '{} {}'.format(str(endtime), 'UTC')
-    interval = datetime.timedelta(hours=100)
+    interval = datetime.timedelta(hours=24)
     starttime = endtime - interval
     print('Retrieving events...')
     events_pages = get_events_pages(username, starttime, endtime)
