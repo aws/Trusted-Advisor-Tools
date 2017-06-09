@@ -1,6 +1,6 @@
 # Trusted Advisor Exposed Keys CloudWatch Event Monitor
 
-The Trusted Advisor Exposed Keys CloudWatch Event Monitor demonstrates how to use [AWS Step Functions] (https://aws.amazon.com/step-functions/) to orchestrate a serverless workflow using [AWS Lambda](http://aws.amazon.com/lambda/) in response to a [CloudWatch](https://aws.amazon.com/cloudwatch/) Event. On detection of a Trusted Advisor Exposed Access Key CloudWatch Event this workflow deletes the exposed IAM Access Key, summarizes the recent API activity for the exposed key, and sends the summary message to an SNS Topic to notify the subscribers.
+The Trusted Advisor Exposed Keys CloudWatch Event Monitor demonstrates how to use [AWS Step Functions](https://aws.amazon.com/step-functions/) to orchestrate a serverless workflow using [AWS Lambda](http://aws.amazon.com/lambda/) in response to a [CloudWatch](https://aws.amazon.com/cloudwatch/) Event. On detection of a Trusted Advisor Exposed Access Key CloudWatch Event this workflow deletes the exposed IAM Access Key, summarizes the recent API activity for the exposed key, and sends the summary message to an SNS Topic to notify the subscribers.
 
 This repository contains sample code for all the Lambda functions depicted in the diagram below as well as an AWS CloudFormation template for creating the functions and related resources.
 
@@ -20,7 +20,7 @@ This repository contains sample code for all the Lambda functions depicted in th
 The backend infrastructure can be deployed in US East - N. Virginia (us-east-1) using the provided CloudFormation template.
 Click **Launch Stack** to launch the template in the US East - N. Virginia (us-east-1) region in your account:
 
-[![Launch Trusted Advisor Exposed Keys CloudWatch Event Monitor into N. Virginia with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=exposed-keys-monitor&templateURL=https://s3.amazonaws.com/exposed-keys-project/delete_exposed_keys.packaged.yaml)
+[![Launch Trusted Advisor Exposed Keys CloudWatch Event Monitor into N. Virginia with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ExposedAccessKeysMonitor&templateURL=https://s3.amazonaws.com/exposed-keys-project/delete_exposed_keys.packaged.yaml)
 
 (In the last page of the wizard, make sure to:
 
