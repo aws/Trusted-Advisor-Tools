@@ -11,7 +11,7 @@ This repository contains sample code for all the Lambda functions depicted in th
 1. Trusted Advisor detects the key, triggering a Trusted Advisor Exposed Access Keys CloudWatch Event. AWS also temporarily restricts the API calls the key is able to make.
 1. A configured CloudWatch Events rule matches this event, triggering an execution of the `ExposedKey` state machine, which has the following sub-steps:
     * Delete the exposed IAM Access Key Pair
-    * Summarize recent API activity for the user
+    * Summarize recent API activity for the user from CloudTrail
     * Send security notification message containing summary to `SecurityNotificationTopic` SNS Topic.
 
 ## Running the Example
