@@ -3,7 +3,7 @@ import boto3
 
 TOPIC_ARN = os.environ['TOPIC_ARN']
 
-TEMPLATE = '''At {} the IAM access key {} for user {} on account {} was deleted after it was found to have been exposed on {}.
+TEMPLATE = '''At {} the IAM access key {} for user {} on account {} was deleted after it was found to have been exposed at the URL {}.
 Below are summaries of the actions, resource names, and resource types associated with this user over the last 24 hours.
 
 Actions:
@@ -37,6 +37,7 @@ def lambda_handler(event, context):
     message = TEMPLATE.format(time_discovered,
                               deleted_key,
                               username,
+                              account_id,
                               exposed_location,
                               event_summary,
                               rname_summary,
