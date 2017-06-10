@@ -29,20 +29,25 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-          - Effect: "Allow"
+          -
+            Sid: "AllowCWEServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
             Principal:
               Service:
-                - !Sub states.${AWS::Region}.amazonaws.com
-            Action: "sts:AssumeRole"
+                - "events.amazonaws.com"
       Path: "/"
       Policies:
-        - PolicyName: StatesExecutionPolicy
+        -
+          PolicyName: "ExecuteStateMachine"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              -
+                Effect: "Allow"
                 Action:
-                  - "lambda:InvokeFunction"
+                  - "states:StartExecution"
                 Resource: "*"
 
   ExposedKeyStepFunction:
@@ -78,37 +83,19 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-          -
-            Sid: "AllowLambdaServiceToAssumeRole"
-            Effect: "Allow"
-            Action:
-              - "sts:AssumeRole"
+          - Effect: "Allow"
             Principal:
-              Service:
-                - "lambda.amazonaws.com"
+              Service: states.us-east-1.amazonaws.com
+            Action: "sts:AssumeRole"
       Path: "/"
       Policies:
-        -
-          PolicyName: "LookupCloudTrailEvents"
+        - PolicyName: StatesExecutionPolicy
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              -
-                Effect: "Allow"
+              - Effect: Allow
                 Action:
-                  - "cloudtrail:LookupEvents"
-                Resource: "*"
-        -
-          PolicyName: "WriteToCWLogs"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              -
-                Effect: "Allow"
-                Action:
-                  - "logs:CreateLogStream"
-                  - "logs:CreateLogGroup"
-                  - "logs:PutLogEvents"
+                  - "lambda:InvokeFunction"
                 Resource: "*"
 
   DeleteAccessKeyPair:
