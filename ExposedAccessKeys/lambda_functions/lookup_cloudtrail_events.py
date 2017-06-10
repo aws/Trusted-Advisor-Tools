@@ -6,11 +6,12 @@ cloudtrail = boto3.client('cloudtrail')
 
 
 def lambda_handler(event, context):
+    account_id = event['account_id']
+    time_discovered = event['time_discovered']
     username = event['username']
     deleted_key = event['deleted_key']
     exposed_location = event['exposed_location']
     endtime = datetime.datetime.now()
-    endtime_str = '{} {}'.format(str(endtime), 'UTC')
     interval = datetime.timedelta(hours=24)
     starttime = endtime - interval
     print('Retrieving events...')
@@ -18,10 +19,11 @@ def lambda_handler(event, context):
     print('Summarizing events...')
     event_names, resource_names, resource_types = get_events_summaries(events_pages)
     return {
+        "account_id": account_id,
+        "time_discovered": time_discovered,
         "username": username,
         "deleted_key": deleted_key,
         "exposed_location": exposed_location,
-        "time_discovered": endtime_str,
         "event_names": event_names,
         "resource_names": resource_names,
         "resource_types": resource_types

@@ -4,6 +4,8 @@ iam = boto3.client('iam')
 
 
 def lambda_handler(event, context):
+    account_id = event['account']
+    time_discovered = event['time']
     details = event['detail']['check-item-detail']
     username = details['User Name (IAM or Root)']
     access_key_id = details['Access Key ID']
@@ -11,6 +13,8 @@ def lambda_handler(event, context):
     print('Deleting exposed access key pair...')
     delete_exposed_key_pair(username, access_key_id)
     return {
+        "account_id": account_id,
+        "time_discovered": time_discovered,
         "username": username,
         "deleted_key": access_key_id,
         "exposed_location": exposed_location
