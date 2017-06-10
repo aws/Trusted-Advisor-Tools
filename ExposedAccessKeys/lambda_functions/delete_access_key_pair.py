@@ -4,7 +4,7 @@ iam = boto3.client('iam')
 
 
 def lambda_handler(event, context):
-    details = event['check-item-detail']
+    details = event['detail']['check-item-detail']
     username = details['User Name (IAM or Root)']
     access_key_id = details['Access Key ID']
     exposed_location = details['Location']
