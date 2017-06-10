@@ -133,6 +133,7 @@ The following sections explain all of the resources created by the CloudFormatio
 
 ### IAM
 - **ExecuteStateMachineRole** - IAM Role with policy that allows CloudWatch Events rule to invoke executions of Step Functions state machines
+- **StepFunctionExecutionRole** IAM Role with policy that allows Step Functions state machines to invoke Lambda functions.
 - **LambdaDeleteAccessKeyPairRole** - IAM Role with policy that allows Lambda function to invoke "iam:DeleteAccessKey" API call and write log messages to CloudWatch Logs.
 - **LambdaLookupCloudTrailEventsRole** - IAM Role with policy that allows Lambda function to invoke "cloudtrail:LookupEvents" API call and write log messages to CloudWatch Logs.
 - **LambdaSnsPublishRole** - IAM Role with policy that allows Lambda function to invoke "sns:Publish" API call and write log messages to CloudWatch Logs.
