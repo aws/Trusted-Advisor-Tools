@@ -4,7 +4,7 @@ import boto3
 TOPIC_ARN = os.environ['TOPIC_ARN']
 
 TEMPLATE = '''At {} the IAM access key {} for user {} on account {} was deleted after it was found to have been exposed at the URL {}.
-Below are summaries of the actions, resource names, and resource types associated with this user over the last 24 hours.
+Below are summaries of the most recent actions, resource names, and resource types associated with this user over the last 24 hours.
 
 Actions:
 {}
@@ -15,7 +15,7 @@ Resource Names:
 Resource Types:
 {}
 
-Please ensure your account remains secure by further reviewing the actions taken by this user in CloudTrail.'''
+These are summaries of only the most recent API calls made by this user. Please ensure your account remains secure by further reviewing the API calls made by this user in CloudTrail.'''
 
 sns = boto3.client('sns')
 
