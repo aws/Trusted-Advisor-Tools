@@ -15,9 +15,9 @@ def lambda_handler(event, context):
     interval = datetime.timedelta(hours=24)
     starttime = endtime - interval
     print('Retrieving events...')
-    events_pages = get_events_pages(username, starttime, endtime)
+    events = get_events(username, starttime, endtime)
     print('Summarizing events...')
-    event_names, resource_names, resource_types = get_events_summaries(events_pages)
+    event_names, resource_names, resource_types = get_events_summaries(events)
     return {
         "account_id": account_id,
         "time_discovered": time_discovered,
@@ -30,10 +30,9 @@ def lambda_handler(event, context):
     }
 
 
-def get_events_pages(username, starttime, endtime):
+def get_events(username, starttime, endtime):
     try:
-        paginator = cloudtrail.get_paginator('lookup_events')
-        lookup_events_iterator = paginator.paginate(
+        response = cloudtrail.lookup_events(
             LookupAttributes=[
                 {
                     'AttributeKey': 'Username',
@@ -42,24 +41,23 @@ def get_events_pages(username, starttime, endtime):
             ],
             StartTime=starttime,
             EndTime=endtime,
-            PaginationConfig={'PageSize': 50}
+            MaxResults=50
         )
     except Exception as e:
         print(e)
         print('Unable to retrieve CloudTrail events for user "{}"'.format(username))
         raise(e)
-    return lookup_events_iterator
+    return response
 
 
-def get_events_summaries(events_pages):
+def get_events_summaries(events):
     event_name_counter = collections.Counter()
     resource_name_counter = collections.Counter()
     resource_type_counter = collections.Counter()
-    for events in events_pages:
-        for event in events['Events']:
-            resources = event.get("Resources")
-            event_name_counter.update([event.get('EventName')])
-            if resources is not None:
-                resource_name_counter.update([resource.get("ResourceName") for resource in resources])
-                resource_type_counter.update([resource.get("ResourceType") for resource in resources])
+    for event in events['Events']:
+        resources = event.get("Resources")
+        event_name_counter.update([event.get('EventName')])
+        if resources is not None:
+            resource_name_counter.update([resource.get("ResourceName") for resource in resources])
+            resource_type_counter.update([resource.get("ResourceType") for resource in resources])
     return event_name_counter.most_common(10), resource_name_counter.most_common(10), resource_type_counter.most_common(10)
