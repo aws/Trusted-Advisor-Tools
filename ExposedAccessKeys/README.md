@@ -122,16 +122,8 @@ Actions:
         StartExecution: 1
 
 Resource Names:
-        WriteToCWLogs: 10
-        XXX-LambdaLookupCloudTrailEventsRole-XXX: 6
-        XXX-LambdaDeleteAccessKeyPairRole: 6
-        XXX-LambdaSnsPublishRole: 6
-        LookupCloudTrailEvents: 4
-        XXX-StepFunctionExecutionRole-XXX: 4
-        XXX-ExecuteStateMachineRole-XXX: 4
-        XXX-LambdaSnsPublishRole-XXX: 3
-        PublishToSNSTopic: 3
-        XXX-LambdaDeleteAccessKeyPairRole-XXX: 3
+        SomeResourceName: 10
+        SomeOtherResourceName: 39
 
 Resource Types:
         AWS::IAM::Role: 64
