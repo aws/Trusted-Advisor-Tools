@@ -105,6 +105,41 @@ Ensure you have at least one E-mail address [subscribed](http://docs.aws.amazon.
 You can follow the state machine's progress in the Step Functions console. The summary message for `test-user` will be sent to the e-mail address(es) subscribed to the `SecurityNotificationTopic` SNS Topic.
  * **Note that the summary for this user will likely be empty as it will not have logged any API calls to CloudTrail**
 
+ Here is an example of what this message might look like for a user who has made recent API calls to IAM and Step Functions:
+ ```
+At DETECTED_TIME the IAM access key ACCESS_KEY_ID for user USERNAME on account ACCOUNT_ID was deleted after it was found to have been exposed at the URL www.github.com/some_user/some_repo/some_file.
+Below are summaries of the most recent actions, resource names, and resource types associated with this user over the last 24 hours.
+
+Actions:
+        PutRolePolicy: 16
+        CreateRole: 10
+        DeleteRolePolicy: 10
+        DeleteRole: 8
+        CreateStateMachine: 2
+        DeleteStateMachine: 1
+        DeleteStack: 1
+        ConsoleLogin: 1
+        StartExecution: 1
+
+Resource Names:
+        WriteToCWLogs: 10
+        XXX-LambdaLookupCloudTrailEventsRole-XXX: 6
+        XXX-LambdaDeleteAccessKeyPairRole: 6
+        XXX-LambdaSnsPublishRole: 6
+        LookupCloudTrailEvents: 4
+        XXX-StepFunctionExecutionRole-XXX: 4
+        XXX-ExecuteStateMachineRole-XXX: 4
+        XXX-LambdaSnsPublishRole-XXX: 3
+        PublishToSNSTopic: 3
+        XXX-LambdaDeleteAccessKeyPairRole-XXX: 3
+
+Resource Types:
+        AWS::IAM::Role: 64
+        AWS::IAM::Policy: 26
+
+These are summaries of only the most recent API calls made by this user. Please ensure your account remains secure by further reviewing the API calls made by this user in CloudTrail.
+ ```
+
 
 ## Cleaning Up the Stack Resources
 
