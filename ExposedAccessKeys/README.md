@@ -117,8 +117,6 @@ Actions:
         DeleteRole: 8
         CreateStateMachine: 2
         DeleteStateMachine: 1
-        DeleteStack: 1
-        ConsoleLogin: 1
         StartExecution: 1
 
 Resource Names:
