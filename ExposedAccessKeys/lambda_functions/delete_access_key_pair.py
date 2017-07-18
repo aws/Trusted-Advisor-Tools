@@ -22,6 +22,16 @@ def lambda_handler(event, context):
 
 
 def delete_exposed_key_pair(username, access_key_id):
+    """ Deletes IAM access key pair identified by access key ID for specified user.
+
+    Args:
+        username (string): Username of IAM user to delete key pair for.
+        access_key_id (string): IAM access key ID to identify key pair to delete.
+
+    Returns:
+        (None)
+
+    """
     try:
         iam.delete_access_key(
             UserName=username,
