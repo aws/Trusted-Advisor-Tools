@@ -81,7 +81,7 @@ Trusted Advisor automatically runs checks at regular intervals. Instead of waiti
 
 **Note: if the button is greyed out then a manual check cycle has already recently run so you must wait a small delay before running another**
 
-You can verify the permissions have been removed via the S3 console. The security notification message will be sent to the e-mail address(es) subscribed to the `SecurityNotificationTopic` SNS Topic.
+To verify the permissions have been removed from your test bucket return to the `Permissions` tab of the bucket in the S3 console and review the permissions for the `Everyone` group. The security notification message will be sent to the e-mail address(es) subscribed to the `SecurityNotificationTopic` SNS Topic.
 
  Here is an example of what this message might look like for a user who has made recent API calls to IAM and Step Functions:
  ```
