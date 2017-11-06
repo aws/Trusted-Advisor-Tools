@@ -8,7 +8,7 @@ You can automatically stop EC2 instances that have low utilization recommended b
 
 Choose **Launch Stack** to launch the CloudFormation template in the US East (N. Virginia) Region in your account:
 
-[![Launch Stop Low Utilization EC2 Instances](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=StopLowUtilizationEC2Instances&templateURL=https://s3.amazonaws.com/aws-health-tools-assets/cloudformation-templates/TALowUtilizationEC2Instances.template)
+[![Launch Stop Low Utilization EC2 Instances](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=StopLowUtilizationEC2Instances&templateURL=https://s3-us-west-2.amazonaws.com/aws-trusted-advisor-open-source/cloudformation-templates/TALowUtilizationEC2Instances.template)
 
 You can change the region according to your preference. Make sure to set the appropriate tags and region per your requirements in configuration section of the Lambda function. 
 
