@@ -6,6 +6,14 @@ Checks the Amazon Elastic Compute Cloud (Amazon EC2) instances that were running
 ### Setup and Usage
 You can automatically stop EC2 instances that have low utilization recommended by Trusted Advisor using Amazon Cloudwatch events and AWS Lambda to reduce cost using the following instructions:
 
+Choose **Launch Stack** to launch the CloudFormation template in the US East (N. Virginia) Region in your account:
+
+[![Launch Stop Low Utilization EC2 Instances](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=StopLowUtilizationEC2Instances&templateURL=https://s3.amazonaws.com/aws-health-tools-assets/cloudformation-templates/TALowUtilizationEC2Instances.template)
+
+You can change the region according to your preference. Make sure to set the appropriate tags and region per your requirements in configuration section of the Lambda function. 
+
+Alternatively, you can manually create each resource if needed using the following instructions:
+
 1. Create an Amazon IAM role for the Lambda function to use. Attach the [IAM policy](IAMPolicy) to the role in the IAM console.
 Documentation on how to create an IAM policy is available here: http://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html
 Documentation on how to create an IAM role for Lambda is available here: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html#roles-creatingrole-service-console
