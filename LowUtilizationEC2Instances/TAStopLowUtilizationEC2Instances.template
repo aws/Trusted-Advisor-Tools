@@ -67,7 +67,7 @@
                                 "// define configuration",
                                 "const tagKey ='environment';",
                                 "const tagValue ='dev';",
-								"const dryrun ='true';", //set to false during testing
+								"const dryRun ='true'; //set to false during testing ",
                                 "const regionSpecification = 'eu-west-1'; //Specify a region to restrict the EC2 Stop Instances action to. Use 'all' for all regions",
                                 "",
                                 "//main function which gets Trusted Advisor data from Cloudwatch event",
@@ -109,7 +109,7 @@
                                 "            {",
                                 "                var stopInstancesParams = {",
                                 "                    InstanceIds: [instanceId],",
-                                "                    DryRun: dryrun //set to true for testing",
+                                "                    DryRun: dryRun //set to true for testing",
                                 "                };",
                                 "                ec2.stopInstances(stopInstancesParams, function(err, data) {",
                                 "                    if (err) console.log(instanceId, region, err, err.stack); // an error occurred",
