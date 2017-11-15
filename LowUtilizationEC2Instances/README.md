@@ -10,7 +10,7 @@ Choose **Launch Stack** to launch the CloudFormation template in the US East (N.
 
 [![Launch Stop Low Utilization EC2 Instances](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=StopLowUtilizationEC2Instances&templateURL=https://s3-us-west-2.amazonaws.com/aws-trusted-advisor-open-source/cloudformation-templates/TALowUtilizationEC2Instances.template)
 
-You can change the region according to your preference. Make sure to set the appropriate tags and region per your requirements in configuration section of the Lambda function. 
+Make sure to set the appropriate tags and region per your requirements in configuration section of the Lambda function. Set the Dryrun flag to true during testing.
 
 Alternatively, you can manually create each resource if needed using the following instructions:
 
