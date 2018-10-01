@@ -1,0 +1,23 @@
+{
+  "version": "0",
+  "id": "16d7b3e0-e74b-bc3d-7196-58b604d997ae",
+  "detail-type": "Trusted Advisor Check Item Refresh Notification",
+  "source": "aws.trustedadvisor",
+  "account": "083010608567",
+  "time": "2018-09-26T17:25:07Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "check-name": "Amazon S3 Bucket Versioning",
+    "check-item-detail": {
+      "Status": "Yellow",
+      "Versioning": "Not enabled",
+      "MFA Delete Enabled": "No",
+      "Region": "us-east-1",
+      "Bucket Name": "tpbucket"
+    },
+    "status": "WARN",
+    "resource_id": "arn:aws:s3:::tpbucket",
+    "uuid": "b485c38e-2eca-415c-a4b7-3a53fc5e2afe"
+  }
+}
