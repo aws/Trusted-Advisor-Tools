@@ -1,0 +1,231 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters: 
+  ResizeAutomationApproverUserARN:
+    Type: String
+    Description: Enter the Approver User ARN for the automation document.
+  ResizeAutomationDocument:
+    Default: AWS-ResizeInstance
+    Type: String
+    Description: Enter the Automated Document to execute resize.
+Resources:
+  TAHighInstanceFunction: 
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      Handler: "index.lambda_handler"
+      Role: !GetAtt ExecutionRole.Arn
+      Environment: 
+        Variables:
+          ResizeAutoDocument: !Ref AutoDocApprovalDocument
+          AutomationAssumeRole: !GetAtt ExecutionRole.Arn
+      Code: 
+        ZipFile: |
+              import json
+              import boto3
+              import os
+              ssm = boto3.client('ssm')
+              ec2 = boto3.client('ec2')
+              #
+              i_list = {
+                "t2":["nano","micro","small","medium","large","xlarge","2xlarge"],
+                "t3":["nano","micro","small","medium","large","xlarge","2xlarge"],
+                "m5d":["large","xlarge","2xlarge","4xlarge","12xlarge","24xlarge"],
+                "m5":["large","xlarge","2xlarge","4xlarge","12xlarge","24xlarge"],
+                "m4":["large","xlarge","2xlarge","4xlarge","10xlarge","16xlarge"],
+                "c5d":["large","xlarge","2xlarge","4xlarge","9xlarge","18xlarge"],
+                "c5":["large","xlarge","2xlarge","4xlarge","9xlarge","18xlarge"],
+                "c4":["large","xlarge","2xlarge","4xlarge","8xlarge"],
+                "f1":["2xlarge","16xlarge"],
+                "g3":["4xlarge","8xlarge","16xlarge"],
+                "g2":["2xlarge","8xlarge"],
+                "p2":["xlarge","8xlarge","16xlarge"],
+                "p3":["2xlarge","8xlarge","16xlarge"],
+                "r5d":["large","xlarge","2xlarge","4xlarge","12xlarge","24xlarge"],
+                "r5":["large","xlarge","2xlarge","4xlarge","12xlarge","24xlarge"],
+                "r4":["large","xlarge","2xlarge","4xlarge","8xlarge","16xlarge"],
+                "x1":["16xlarge","32xlarge"],
+                "x1e":["xlarge","2xlarge","4xlarge","8xlarge","16xlarge","32xlarge"],
+                "z1d":["large","xlarge","2xlarge","3xlarge","6xlarge","12xlarge"],
+                "d2":["xlarge","2xlarge","4xlarge","8xlarge"],
+                "i2":["xlarge","2xlarge","4xlarge","8xlarge"],
+                "h1":["2xlarge","4xlarge","8xlarge","16xlarge"],
+                "i3":["large","xlarge","2xlarge","4xlarge","8xlarge","16xlarge"]
+              }
+              def getResize(IType):
+                  I = IType.split(".")
+                  Idx = i_list[I[0]].index(I[1])
+                  leng = len(i_list[I[0]]) - 1
+                  
+                  if Idx < leng:
+                      NIdx = Idx + 1
+                      RType = I[0] + "." + i_list[I[0]][NIdx]
+                  else:
+                      RType = "none"
+                  return(RType)
+              def getIType(IID):
+                  resp = ec2.describe_instances(InstanceIds=[IID])
+                  RType = resp['Reservations'][0]['Instances'][0]['InstanceType']
+                  return(RType)
+              def lambda_handler(event, context):
+                  print(json.dumps(event))
+                  IID = event['detail']['check-item-detail']['Instance ID']
+                  IType = getIType(IID)
+                  RType = getResize(IType)
+                  
+                  if RType != "none":
+                      x = ssm.start_automation_execution(
+                              DocumentName = os.environ['ResizeAutoDocument'],
+                              Parameters= { 
+                                  'InstanceId': [IID], 
+                                  'InstanceType': [RType],
+                                  'AutomationAssumeRole': [os.environ['AutomationAssumeRole']]
+                                }
+                            )
+                      print(json.dumps(x))
+                      print("Executing Resize")
+                  else:
+                      print("No Higher Instance Found, Please Review other Instance Family")
+                  return(event)
+      Runtime: "python3.6"
+      Timeout: "300"
+
+  TAHighUtilizationEventRule: 
+    Type: "AWS::Events::Rule"
+    Properties: 
+      Description: "EventRule"
+      RoleArn: !GetAtt ExecutionRole.Arn
+      EventPattern: 
+            source:
+              - awsmock.trustedadvisor
+            detail-type:
+              - Trusted Advisor Check Item Refresh Notification
+            detail:
+              status:
+                - WARN
+              check-name:
+                - High Utilization Amazon EC2 Instances
+      Targets: 
+        -
+          Arn: !GetAtt TAHighInstanceFunction.Arn
+          Id: TAHighInstanceFunction.V1
+      State: "ENABLED"
+
+####################################################################################
+# Execution Role
+####################################################################################
+
+
+  ExecutionRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies: 
+        - 
+          PolicyName: "Policies"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "arn:aws:logs:*:*:*"
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "sns:Publish"
+                Resource: "*"
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "iam:PassRole"
+                  - "iam:CreateRole"
+                  - "iam:DeleteRolePolicy"
+                  - "iam:PutRolePolicy"
+                  - "iam:GetRole"
+                  - "iam:DeleteRole"
+                Resource: "*"
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "ssm:StartAutomationExecution"
+                  - "ssm:StopAutomationExecution"
+                  - "ssm:GetAutomationExecution"
+                Resource: "*"
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "ec2:DescribeInstances"
+                  - "ec2:DescribeInstanceStatus"
+                  - "ec2:StartInstances"
+                  - "ec2:ModifyInstanceAttribute"
+                  - "ec2:StopInstances"
+                Resource: "*"
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "lambda:CreateFunction"
+                  - "lambda:InvokeFunction"
+                  - "lambda:AddPermission"
+                  - "lambda:DeleteFunction"
+                  - "lambda:GetFunction"
+                Resource: "*"
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "cloudformation:CreateStack"
+                  - "cloudformation:DeleteStack"
+                  - "cloudformation:DescribeStacks"
+                Resource: "*"
+
+  AutoDocApprovalDocument: 
+    Type: "AWS::SSM::Document"
+    Properties:
+      DocumentType: Automation
+      Content: 
+        description: Resize Instance with Approval
+        schemaVersion: '0.3'
+        assumeRole: "{{ AutomationAssumeRole }}"
+        parameters:
+          InstanceId:
+            type: String
+            description: "(Required) EC2 Instance to restart"
+          InstanceType:
+            type: String
+            description: "(Required) EC2 Instance Type"
+          AutomationAssumeRole:
+            default: "" 
+            description: "(Optional) The ARN of the role that allows Automation to perform the actions on your behalf."
+            type: String
+        mainSteps:
+          - name: Approve
+            action: aws:approve
+            onFailure: Abort
+            inputs:
+              NotificationArn: !Ref SNSAutomation
+              Message: "You have an Instance Resize approval request."
+              MinRequiredApprovals: 1
+              Approvers: 
+                - !Ref ResizeAutomationApproverUserARN
+          - name: Resize
+            action: aws:executeAutomation
+            maxAttempts: 10
+            timeoutSeconds: 600
+            onFailure: Abort
+            inputs:
+              DocumentName: !Ref ResizeAutomationDocument 
+              RuntimeParameters:
+                InstanceId: "{{ InstanceId }}"
+                InstanceType: "{{ InstanceType }}"
+
+  SNSAutomation: 
+    Type: AWS::SNS::Topic
