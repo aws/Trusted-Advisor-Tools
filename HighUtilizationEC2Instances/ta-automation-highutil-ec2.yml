@@ -92,7 +92,7 @@ Resources:
     Type: "AWS::Events::Rule"
     Properties: 
       Description: "EventRule"
-      RoleArn: !GetAtt ExecutionRole.Arn
+#      RoleArn: !GetAtt ExecutionRole.Arn
       EventPattern: 
             source:
               - awsmock.trustedadvisor
