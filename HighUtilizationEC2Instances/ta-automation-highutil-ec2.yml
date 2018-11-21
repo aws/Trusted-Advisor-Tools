@@ -8,6 +8,33 @@ Parameters:
     Type: String
     Description: Enter the Automated Document to execute resize.
 Resources:
+
+  TAHighInstanceFunctionPermissionMock:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt 
+        - TAHighInstanceFunction
+        - Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !GetAtt 
+        - TAHighUtilizationEventRuleMock
+        - Arn
+
+  TAHighInstanceFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt 
+        - TAHighInstanceFunction
+        - Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !GetAtt 
+        - TAHighUtilizationEventRule
+        - Arn
+
   TAHighInstanceFunction: 
     Type: "AWS::Lambda::Function"
     Properties: 
@@ -88,14 +115,35 @@ Resources:
       Runtime: "python3.6"
       Timeout: "300"
 
+  TAHighUtilizationEventRuleMock: 
+    Type: "AWS::Events::Rule"
+    Properties: 
+      Description: "EventRule"
+      Name: TAHighEC2UtilMock
+      EventPattern: 
+            source:
+              - awsmock.trustedadvisor
+            detail-type:
+              - Trusted Advisor Check Item Refresh Notification
+            detail:
+              status:
+                - WARN
+              check-name:
+                - High Utilization Amazon EC2 Instances
+      Targets: 
+        -
+          Arn: !GetAtt TAHighInstanceFunction.Arn
+          Id: TAHighInstanceFunction
+      State: "ENABLED"
+
   TAHighUtilizationEventRule: 
     Type: "AWS::Events::Rule"
     Properties: 
       Description: "EventRule"
-#      RoleArn: !GetAtt ExecutionRole.Arn
+      Name: TAHighEC2Util
       EventPattern: 
             source:
-              - awsmock.trustedadvisor
+              - aws.trustedadvisor
             detail-type:
               - Trusted Advisor Check Item Refresh Notification
             detail:
