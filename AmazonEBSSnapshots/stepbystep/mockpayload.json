@@ -1,0 +1,9 @@
+[
+  {
+    "DetailType": "Trusted Advisor Check Item Refresh Notification",
+    "Source": "awsmock.trustedadvisor",
+    "Time": "2018-11-05T14:46:52Z",
+    "Resources": [],
+    "Detail": "{ \"check-name\": \"Amazon EBS Snapshots\", \"check-item-detail\": { \"Status\": \"Red\", \"Volume Attachment\": \"\", \"Volume ID\": \"<REPLACE VOLUME ID>\", \"Snapshot Name\": null, \"Region\": \"<REPLACE REGION>\", \"Snapshot ID\": null, \"Volume Name\": null, \"Snapshot Age\": null, \"Reason\": \"No snapshot\" }, \"status\": \"ERROR\", \"resource_id\": \"arn:aws:ec2:<REPLACE REGION>:<REPLACE ACCOUNT ID>:volume/<REPLACE VOLUME ID>\", \"uuid\": \"e880a3df-b2ca-47c3-8e10-1b5c445b0620\" }"
+ }
+]
