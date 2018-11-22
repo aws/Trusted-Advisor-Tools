@@ -64,7 +64,7 @@ IAM Role
 ```
 
 8. Click on **Create Function**.
-9. Copy Paste below Lambda Function Code and click **Save**
+9. Copy Paste below Lambda Function Code and click **Save**.
 
 Lambda Function Code
 
@@ -134,7 +134,7 @@ def lambda_handler(event, context):
     return None
 ```
 
-7. You can test the lambda function with this payload to see if it triggers the automation document
+10. You can test the lambda function with this payload to see if it triggers the automation document
 
 ```
 {
