@@ -1,39 +1,32 @@
 AWSTemplateFormatVersion: '2010-09-09'
+
 Parameters: 
   ResizeAutomationApproverUserARN:
     Type: String
     Description: Enter the Approver User ARN for the automation document.
-  ResizeAutomationDocument:
-    Default: AWS-ResizeInstance
+  ResizeAutomationApprovalDocument:
     Type: String
-    Description: Enter the Automated Document to execute resize.
-Resources:
+    Description: Enter the Automated Document you have created on each region to execute resize with Approval (If you leave this blank template will only works on us-east-1).
 
+Conditions:
+  ResizeAutomationApprovalDocumentCond: !Not [!Equals [!Ref ResizeAutomationApprovalDocument, "" ]]
+
+Resources:
   TAHighInstanceFunctionPermissionMock:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !GetAtt 
-        - TAHighInstanceFunction
-        - Arn
+      FunctionName: !GetAtt TAHighInstanceFunction.Arn
       Action: 'lambda:InvokeFunction'
       Principal: events.amazonaws.com
-      SourceAccount: !Ref 'AWS::AccountId'
-      SourceArn: !GetAtt 
-        - TAHighUtilizationEventRuleMock
-        - Arn
+      SourceArn: !GetAtt TAHighUtilizationEventRuleMock.Arn
 
   TAHighInstanceFunctionPermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !GetAtt 
-        - TAHighInstanceFunction
-        - Arn
+      FunctionName: !GetAtt TAHighInstanceFunction.Arn
       Action: 'lambda:InvokeFunction'
       Principal: events.amazonaws.com
-      SourceAccount: !Ref 'AWS::AccountId'
-      SourceArn: !GetAtt 
-        - TAHighUtilizationEventRule
-        - Arn
+      SourceArn: !GetAtt TAHighUtilizationEventRule.Arn
 
   TAHighInstanceFunction: 
     Type: "AWS::Lambda::Function"
@@ -42,16 +35,18 @@ Resources:
       Role: !GetAtt ExecutionRole.Arn
       Environment: 
         Variables:
-          ResizeAutoDocument: !Ref AutoDocApprovalDocument
-          AutomationAssumeRole: !GetAtt ExecutionRole.Arn
+          ResizeAutoDocument:         
+            !If
+              - ResizeAutomationApprovalDocumentCond
+              - !Ref ResizeAutomationApprovalDocument
+              - !Ref AutoDocApprovalDocument
       Code: 
         ZipFile: |
               import json
               import boto3
               import os
-              ssm = boto3.client('ssm')
-              ec2 = boto3.client('ec2')
-              #
+
+              ## EC2 Instance Table to decide which instance type to resize
               i_list = {
                 "t2":["nano","micro","small","medium","large","xlarge","2xlarge"],
                 "t3":["nano","micro","small","medium","large","xlarge","2xlarge"],
@@ -77,6 +72,9 @@ Resources:
                 "h1":["2xlarge","4xlarge","8xlarge","16xlarge"],
                 "i3":["large","xlarge","2xlarge","4xlarge","8xlarge","16xlarge"]
               }
+
+              ## Function to decide new EC2 instance type
+              ## This function will choose a higher instance type in the same family 
               def getResize(IType):
                   I = IType.split(".")
                   Idx = i_list[I[0]].index(I[1])
@@ -88,23 +86,35 @@ Resources:
                   else:
                       RType = "none"
                   return(RType)
-              def getIType(IID):
+
+              ## Function to find instance type from instance id.
+              def getIType(IID,ec2):
                   resp = ec2.describe_instances(InstanceIds=[IID])
                   RType = resp['Reservations'][0]['Instances'][0]['InstanceType']
                   return(RType)
+
+              ## Lambda Handler Function
               def lambda_handler(event, context):
                   print(json.dumps(event))
+                  RARN = event['detail']['resource_id'].split(':')
+                  REGION = RARN[3]
+                  
+                  ssm = boto3.client('ssm', region_name=REGION)
+                  ec2 = boto3.client('ec2', region_name=REGION)
+                
+                # Find Instance ID, check the type and decise which is the next instance type.
                   IID = event['detail']['check-item-detail']['Instance ID']
-                  IType = getIType(IID)
+                  IType = getIType(IID,ec2)
                   RType = getResize(IType)
                   
+                  # Execute Automation Document of ResizeAutoDocument Environment variable.
+                  # xecute Automation Document
                   if RType != "none":
                       x = ssm.start_automation_execution(
                               DocumentName = os.environ['ResizeAutoDocument'],
                               Parameters= { 
-                                  'InstanceId': [IID], 
-                                  'InstanceType': [RType],
-                                  'AutomationAssumeRole': [os.environ['AutomationAssumeRole']]
+                                  'InstanceId': [IID],
+                                  'InstanceType': [RType]
                                 }
                             )
                       print(json.dumps(x))
@@ -119,7 +129,7 @@ Resources:
     Type: "AWS::Events::Rule"
     Properties: 
       Description: "EventRule"
-      Name: TAHighEC2UtilMock
+      RoleArn: !GetAtt ExecutionRole.Arn
       EventPattern: 
             source:
               - awsmock.trustedadvisor
@@ -139,8 +149,8 @@ Resources:
   TAHighUtilizationEventRule: 
     Type: "AWS::Events::Rule"
     Properties: 
+      RoleArn: !GetAtt ExecutionRole.Arn
       Description: "EventRule"
-      Name: TAHighEC2Util
       EventPattern: 
             source:
               - aws.trustedadvisor
@@ -171,6 +181,7 @@ Resources:
             Effect: "Allow"
             Principal: 
               Service: 
+                - "events.amazonaws.com"
                 - "lambda.amazonaws.com"
             Action: 
               - "sts:AssumeRole"
@@ -270,7 +281,7 @@ Resources:
             timeoutSeconds: 600
             onFailure: Abort
             inputs:
-              DocumentName: !Ref ResizeAutomationDocument 
+              DocumentName: AWS-ResizeInstance 
               RuntimeParameters:
                 InstanceId: "{{ InstanceId }}"
                 InstanceType: "{{ InstanceType }}"

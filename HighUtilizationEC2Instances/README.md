@@ -5,7 +5,7 @@ Trusted Advisor checks the Amazon Elastic Compute Cloud (Amazon EC2) instances t
 
 ![alt txt](images/diagram.png)
 
-
+## Walkthrough
 
 ### Step 0 - Preparing the EC2 instance.
 
@@ -119,7 +119,10 @@ Please also take note of the region name for the remaining of the workshop.*
 
 **Execute automation document**
 
-1. From AWS console, click on Services and type in Systems Manager in the search bar and press enter. ![alt txt](images/step1.png)
+1. From AWS console, click on Services and type in Systems Manager in the search bar and press enter. 
+
+![alt txt](images/step1.png)
+
 2. Click on **Automation** on the left menu.
 3. Click on **Execute automation**.
 4. Search for the name of the Automation Document created above using the search bar.
@@ -132,9 +135,8 @@ Please also take note of the region name for the remaining of the workshop.*
 
 ### Step 3 Creating Lambda Function to trigger Automation Document.
 
-_**Note :**_
-
-*The following steps must be deployed in us-east-1 region.*
+**Note :**
+The following steps must be deployed in **us-east-1** region.
 
 
 <details>
@@ -244,8 +246,7 @@ import json
 import boto3
 import os
 
-#
-
+## EC2 Instance Table to decide which instance type to resize
 i_list = {
   "t2":["nano","micro","small","medium","large","xlarge","2xlarge"],
   "t3":["nano","micro","small","medium","large","xlarge","2xlarge"],
@@ -272,6 +273,8 @@ i_list = {
   "i3":["large","xlarge","2xlarge","4xlarge","8xlarge","16xlarge"]
 }
 
+## Function to decide new EC2 instance type
+## This function will choose a higher instance type in the same family 
 def getResize(IType):
     I = IType.split(".")
     Idx = i_list[I[0]].index(I[1])
@@ -284,11 +287,13 @@ def getResize(IType):
         RType = "none"
     return(RType)
 
+## Function to find instance type from instance id.
 def getIType(IID,ec2):
     resp = ec2.describe_instances(InstanceIds=[IID])
     RType = resp['Reservations'][0]['Instances'][0]['InstanceType']
     return(RType)
 
+## Lambda Handler Function
 def lambda_handler(event, context):
     print(json.dumps(event))
     RARN = event['detail']['resource_id'].split(':')
@@ -296,12 +301,14 @@ def lambda_handler(event, context):
     
     ssm = boto3.client('ssm', region_name=REGION)
     ec2 = boto3.client('ec2', region_name=REGION)
-    
+   
+	 # Find Instance ID, check the type and decise which is the next instance type.
     IID = event['detail']['check-item-detail']['Instance ID']
     IType = getIType(IID,ec2)
     RType = getResize(IType)
     
-    
+    # Execute Automation Document of ResizeAutoDocument Environment variable.
+    # xecute Automation Document
     if RType != "none":
         x = ssm.start_automation_execution(
                 DocumentName = os.environ['ResizeAutoDocument'],
@@ -320,6 +327,7 @@ def lambda_handler(event, context):
 7. Create environment variables with key **ResizeAutoDocument** and the name of the automation document you created on step 2 
 ![alt txt](images/step12.png)
 
+7. Set the function timeout to 30 seconds or more.
 
 8. You can test the lambda function with this payload to see if it triggers the automation document
 
@@ -334,9 +342,58 @@ def lambda_handler(event, context):
 }
 ```
 
+For visibility here is an example of the event being triggered by TA High Utilization Check.
+
+```
+{  
+   "version":"0",
+   "id":"4d04a964-88a6-7093-74c8-9af26598ca3e",
+   "detail-type":"Trusted Advisor Check Item Refresh Notification",
+   "source":"aws.trustedadvisor",
+   "account":"000000000000",
+   "time":"2018-11-20T01:01:49Z",
+   "region":"us-east-1",
+   "resources":[  
+
+   ],
+   "detail":{  
+      "check-name":"High Utilization Amazon EC2 Instances",
+      "check-item-detail":{  
+         "Day 1":"98.8%",
+         "Day 2":"98.8%",
+         "Day 3":"98.8%",
+         "Region/AZ":"us-west-2c",
+         "14-Day Average CPU Utilization":"98.8%",
+         "Day 14":"98.8%",
+         "Day 13":"98.8%",
+         "Day 12":"98.8%",
+         "Day 11":"98.8%",
+         "Day 10":"98.8%",
+         "Instance Type":"m3.medium",
+         "Instance ID":"i-b6218518",
+         "Day 8":"98.8%",
+         "Instance Name":"Overutilized4",
+         "Day 9":"98.8%",
+         "Number of Days over 90% CPU Utilization":"14",
+         "Day 4":"98.8%",
+         "Day 5":"98.8%",
+         "Day 6":"98.8%",
+         "Day 7":"98.8%"
+      },
+      "status":"WARN",
+      "resource_id":"arn:aws:ec2:us-west-2:753667216438:instance/i-b6218518",
+      "uuid":"e03b12af-004c-412b-9a76-c7d77a907c6d"
+   }
+}
+
+```
+
 </p></details>
 
 ### Step 4 Creating CloudWatch Events to trigger Lambda.
+
+**Note :**
+The following steps must be deployed in **us-east-1** region.
 
 <details>
 <summary>**[ Click here for detailed steps ]**</summary><p>
@@ -413,51 +470,21 @@ To trigger mock event run below command. ( Require AWS CLI )
 ```
 Adjust the time and instance Id then trigger the event
 
-For visibility here is an example of the event being triggered by TA High Utilization Check
 
-```
-{  
-   "version":"0",
-   "id":"4d04a964-88a6-7093-74c8-9af26598ca3e",
-   "detail-type":"Trusted Advisor Check Item Refresh Notification",
-   "source":"aws.trustedadvisor",
-   "account":"753667216438",
-   "time":"2018-11-20T01:01:49Z",
-   "region":"us-east-1",
-   "resources":[  
-
-   ],
-   "detail":{  
-      "check-name":"High Utilization Amazon EC2 Instances",
-      "check-item-detail":{  
-         "Day 1":"98.8%",
-         "Day 2":"98.8%",
-         "Day 3":"98.8%",
-         "Region/AZ":"us-west-2c",
-         "14-Day Average CPU Utilization":"98.8%",
-         "Day 14":"98.8%",
-         "Day 13":"98.8%",
-         "Day 12":"98.8%",
-         "Day 11":"98.8%",
-         "Day 10":"98.8%",
-         "Instance Type":"m3.medium",
-         "Instance ID":"i-b6218518",
-         "Day 8":"98.8%",
-         "Instance Name":"Overutilized4",
-         "Day 9":"98.8%",
-         "Number of Days over 90% CPU Utilization":"14",
-         "Day 4":"98.8%",
-         "Day 5":"98.8%",
-         "Day 6":"98.8%",
-         "Day 7":"98.8%"
-      },
-      "status":"WARN",
-      "resource_id":"arn:aws:ec2:us-west-2:753667216438:instance/i-b6218518",
-      "uuid":"e03b12af-004c-412b-9a76-c7d77a907c6d"
-   }
-}
-
-```
 </p></details>
 
 
+## CloudFormation Template
+
+**Note:**
+
+The following cloudformation stack needs to be deployed on us-east-1 only and it is meant to showcase the automation working ec2 resources in **us-east-1** only. To automate EC2 resources in other region than **us-east-1** you can create individual AutomationDocument with approval in each region with identical name, e.g: `Custom-TA-Resize-Approval` ( Follow Step 2 above ) and specify the name of the AutomationDocument in ResizeAutomationApprovalDocument parameter when launching the stack below 
+
+<details>
+<summary>**[ Click here for detailed steps ]**</summary><p>
+
+
+1. Deploy CloudFormation stack using template `ta-automation-highutil-ec2.yml` in **us-east-1** region. Refer here for instructions on how to deploy Stack [Create Stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html "Create Stack")
+2. If you are automating instance outside us-east-1 read the note above and fill in the AutomationDocument name you created in **ResizeAutomationApprovalDocument** parameter. If you leave them blank the automation will only works on **us-east-1**
+
+</p></details>
