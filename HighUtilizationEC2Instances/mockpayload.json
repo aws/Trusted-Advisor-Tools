@@ -1,0 +1,9 @@
+[
+  {
+    "DetailType": "Trusted Advisor Check Item Refresh Notification",
+    "Source": "awsmock.trustedadvisor",
+    "Time": "2017-02-07T00:55:52Z",
+    "Resources": [],
+    "Detail": "{\"check-name\":\"High Utilization Amazon EC2 Instances\",\"check-item-detail\":{\"Instance ID\":\"i-0ab2df128b86a156c\"},\"status\":\"WARN\",\"resource_id\":\"arn:aws:ec2:us-east-1:23232324324:instance/i-0ab2df128b86a156c\"}"
+  }
+]
