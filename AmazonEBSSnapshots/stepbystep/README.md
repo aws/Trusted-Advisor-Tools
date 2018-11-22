@@ -1,4 +1,4 @@
-##Trusted Advisor Automated Backups of Snapshot-less volumes
+## Trusted Advisor Automated Backups of Snapshot-less volumes
 
 Trusted Advisor checks the age of the snapshots for your Amazon Elastic Block Store (Amazon EBS) volumes (available or in-use). Even though Amazon EBS volumes are replicated, failures can occur. Snapshots are persisted to Amazon Simple Storage Service (Amazon S3) for durable storage and point-in-time recovery. You can automatically create EBS snapshots for volumes that do not have a recent backup as recommended by Trusted Advisor using Amazon Cloudwatch events and AWS Lambda, and by using Lifecycle Management for Amazon EBS Snapshots to ensure snapshots are taken at periodic intervals. 
 
@@ -30,7 +30,7 @@ These steps will go through the how to set up automated backups of such volumes.
 3. Type in your function name. **Example:** *ta-ebs-snapshot*
 4. Set Runtime to **Python3.6**
 5. Select Create custom role, on the newly opened page input a **Role Name**. **Example:** *ta-ebs-role* 
-6. on the newly opened page, click on **View Policy Document** and then **Edit**
+6. On the newly opened page, click on **View Policy Document** and then **Edit**
 7. Copy and paste below IAM Role and click **Allow**
 
 IAM Role
@@ -64,7 +64,7 @@ IAM Role
 ```
 
 8. Click on **Create Function**.
-9. Copy Paste below Lambda Function Code and click **Save**
+9. Copy Paste below Lambda Function Code and click **Save**.
 
 Lambda Function Code
 
@@ -134,7 +134,7 @@ def lambda_handler(event, context):
     return None
 ```
 
-7. You can test the lambda function with this payload to see if it triggers the automation document
+10. You can test the lambda function with this payload to see if it triggers the automation document
 
 ```
 {
