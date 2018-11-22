@@ -30,7 +30,7 @@ These steps will go through the how to set up automated backups of such volumes.
 3. Type in your function name. **Example:** *ta-ebs-snapshot*
 4. Set Runtime to **Python3.6**
 5. Select Create custom role, on the newly opened page input a **Role Name**. **Example:** *ta-ebs-role* 
-6. on the newly opened page, click on **View Policy Document** and then **Edit**
+6. On the newly opened page, click on **View Policy Document** and then **Edit**
 7. Copy and paste below IAM Role and click **Allow**
 
 IAM Role
