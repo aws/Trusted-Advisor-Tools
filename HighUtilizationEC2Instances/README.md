@@ -40,7 +40,7 @@ In this step, we will be executing an automated EC2 Resize activity using an AWS
 ![alt txt](images/step1-diag-build.png)
 
 <details>
-<summary>**[ Click here for detailed steps ]**</summary><p>
+<summary>[ Click here for detailed steps ]</summary><p>
 
 1. From AWS console make sure to select the same region as the launched EC2 instance in step 0.
 2. Then Click on **Services** and type in `Systems Manager` in the search bar, then click on the result.
@@ -73,7 +73,7 @@ In this step we will be creating a custom Systems Manager Automation Document cr
 ![alt txt](images/step2-diag-build.png)
 
 <details>
-<summary>**[ Click here for detailed steps ]**</summary><p>
+<summary>[ Click here for detailed steps ]</summary><p>
 
 _**Note :**_
 *In this step we will be creating an SNS topic to allow Automation Document to send the approval request. Please ensure to create the SNS Topic below in the same region where you deployed the Automation Document and your instance on step 0. Please also take note of the region name for the remaining of the workshop.*
@@ -206,7 +206,7 @@ _**Important :**_
 ![alt txt](images/step4-diag-build.png)
 
 <details>
-<summary>**[ Click here for detailed steps ]**</summary><p>
+<summary>[ Click here for detailed steps ]</summary><p>
 
 1. From AWS console make sure to select the us-east-1 region.
 2. From AWS console, click on Services and type in Lambda in the search bar and press enter. 
