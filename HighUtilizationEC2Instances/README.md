@@ -11,40 +11,54 @@ Trusted Advisor checks the Amazon Elastic Compute Cloud (Amazon EC2) instances t
 
 ### Step 0 - Preparing the EC2 instance.
 
-In this step, we will be deploying the subject EC2 instance for our automation. This EC2 instance will be the test subject for our EC2 Resize automation.
+In this step, we will be deploying a subject EC2 instance for our automation. This EC2 instance will be the test subject that trusted advisor will hypothetically mark as being highly utilized.
 
 ![alt txt](images/step0-diag-build.png)
 
 <details>
 <summary>[ Click here for detailed steps ]</summary><p>
 
-1. From AWS console, take note of the region you are launching your resource.
-2. Launch a generic EC2 instance with any lowest instance type in the instance family e.g : t2.nano. [Click Here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/launching-instance.html "Create EC2 Instance") for step by step guide on how to do so.
-3. Other than the EC2 instance type the rest of the instance confguration can be kept default.
-4. We will not be logging in to the EC2 instance, so keypair creation is optional.
+1. From AWS console, take **note of the region you are launching your resource.**
+2. Click on **Launch Instance**.
+3. Click **Select** on any AMI ( for the purpose of this workshop whichever AMI you select does not matter, as long as the instance can successfully start ).
+4. Select `t2.nano` EC2 instance ( Let's be frugal ) then click **Review and Launch**.
+5. Click on **Edit Tags**.
+6. Click **Add Tag** and place `Name` under Key and type in `ta-test-instance` as the Value.
+5. Click **Review and Launch** once again.
+6. Click **Launch**. 
+7. Select `Proceed without a key pair` and tick the "I acknowledge that I will not be able to connect to this instance unless I already know the password built into this AMI." 
+8. Click **Launch Instances** 
+
+More details on how to launch EC2 instance [Click Here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/launching-instance.html "Create EC2 Instance")
 
 </p></details>
 
 ### Step 1 - Run Resize Automation Document.
 
-In this step, we will be executing an automated EC2 Resize activity using the AWS pre-build `AWS-ResizeInstance` Automated Document. This Automation Document is already available by default in every region where EC2 Systems Manager is available. 
+In this step, we will be executing an automated EC2 Resize activity using an AWS pre-built Automated Document named `AWS-ResizeInstance`. This Automation Document is already available by default in every region where EC2 Systems Manager is available, and we will levarage the existing document to automatically change the EC2 instance type. 
 
 ![alt txt](images/step1-diag-build.png)
 
 <details>
 <summary>**[ Click here for detailed steps ]**</summary><p>
 
-1. From AWS console, click on Services and type in Systems Manager in the search bar and press enter. ![alt txt](images/step1.png)
-2. Click on **Automation** on the left menu.
-3. Click on **Execute automation**.
-4. Search for **AWS-ResizeInstance** using the search bar.
-5. Select on the document enter an **Instance Id** and the **Instance Type** you would like to change in the parameter, and click on **Execute automation**. 
-	![alt txt](images/step5.png)
+1. From AWS console make sure to select the same region as the launched EC2 instance in step 0.
+2. Then Click on **Services** and type in `Systems Manager` in the search bar, then click on the result.
+	![alt txt](images/step1.png)
 
-6. Watch the automation progress by clicking on **Automation** and the running with **AWS-ResizeInstance** document name. 
+3. Click on **Automation** on the left menu.
+3. Click on **Execute automation**.
+4. Search for `AWS-ResizeInstance`using the search bar.
+5. Select `AWS-ResizeInstance` then click **Next**
+6. Under Input parameters enter the Instance Id of the launched EC2 instance in step 0 on `Instance Id` field e.g: i-2daaf3fafads3
+7. Enter the Instance type that you would like this instance to resize to under `Instance type` field e.g: `t2.micro`
+8. Click on **Execute automation**. 
+	![alt txt](images/step5.png)
+	
+9. Watch the automation progressing and notice all the steps Systems Manager has taken for you.
 	![alt txt](images/step6.png)
 
-7. You can also watch the EC2 instance being resized from the normal EC2 console. 
+7. Then watch the EC2 instance being stopped, resized, then start again, without human intervention.
 	![alt txt](images/step7.png)
 
 </p></details>
@@ -52,7 +66,9 @@ In this step, we will be executing an automated EC2 Resize activity using the AW
 
 ### Step 2 - Building Resize Automation Document with Approval.
 
-In this step we will be creating a custom Systems Manager Automation Document to add an approval request before going ahead and resizing the EC2 instance with `AWS-ResizeInstance` as we have done on previous step.
+So far we have managed to automatically resize an EC2 instance automatically. But executing the resize immedietely upon trigger is not ideal, as this process involes stopping the EC2 instance. Therefore, in this scenario, we want to give control to our owner to approve / reject the process before executing the resize .
+
+In this step we will be creating a custom Systems Manager Automation Document create a gated process where an approval request is sent to the owner before going ahead and executing the EC2 resize with `AWS-ResizeInstance` as shown in step 1.
 
 ![alt txt](images/step2-diag-build.png)
 
@@ -60,28 +76,44 @@ In this step we will be creating a custom Systems Manager Automation Document to
 <summary>**[ Click here for detailed steps ]**</summary><p>
 
 _**Note :**_
-*Please create the SNS Topic below in the same region where you deployed the Automation Document and your instance on step 0. Please also take note of the region name for the remaining of the workshop.*
+*In this step we will be creating an SNS topic to allow Automation Document to send the approval request. Please ensure to create the SNS Topic below in the same region where you deployed the Automation Document and your instance on step 0. Please also take note of the region name for the remaining of the workshop.*
 
-**SNS Topic**
+**Setting up the SNS Topic**
 
-1. Browse to AWS SNS console, click **Services** and type **SNS** in the search bar then press enter.
-2. From here click on **Create Topic**, type in **Topic Name** and **Display Name** and click **Create Topic**
-3. Copy and paste the Topic ARN on a notepad ( we will use it later ).
-4. Click on **Create subscription**, select Email for protocol and type in your email addess on endpoint.
+1. From AWS console make sure to select the same region as the launched EC2 instance in step 0.
+2. Click **Services** and type `SNS` then click on the result.
+3. From here click on **Create Topic**.
+4. Type in `ta-resize-approval-topic` as Topic Name and `taresize` as Display Name.
+5. Click **Create Topic** ( Note the SNS topic ARN, we will need this later ) e.g: arn:aws:sns:ap-southeast-2:0227823432442:ta-resize-approval-topic
+6. Click on **Create subscription**, select Email for protocol and type in your email addess on endpoint.
 5. Click **Create subscription**.
-6. You should receive an email from SNS to the email address, click on the verify link in the email to confirm subscription and start accepting notification from this topic.
+6. You should receive an email from SNS service to the email address specified.
+7. Click on the **Confirm Subscription** in the email body.
+8. From this point onwards any notification that is published to this topic, you will receive the notification in your email.
 
-**Automation Document**
+**Creating the Custom Automation Document**
 
-1. From AWS console, click on **Services** and type in **Systems Manager** in the search bar and press enter. 
+1. From AWS console make sure to select the same region as the launched EC2 instance in step 0.
+2. Then Click on **Services** and type in `Systems Manager` in the search bar, then click on the result.
 	![alt txt](images/step1.png)
-
-2. Click on **Documents** on the left menu.
-3. Click on **Create Document**, type in the **Name** `ta-automation-approval-autodocs` and select **Automation document** for the **document type**.
-4. Paste below into the content secton.
-5. Replace the `<enter your SNS topic ARN here>` with the SNS topic ARN you took on step 3 above.
+3. Click on **Documents** on the left menu.
+3. Click on **Create Document**.
+4. Type `Custom-ResizeInstanceApproval` in the Name field.
+5. Select `Automation document` in the Document Type.
+4. Copy paste below sample below into the Content field.
+5. Replace the `<enter your SNS topic ARN here>` in the json text with the SNS topic ARN you took above.
 6. Replace the `<enter the approver IAM user ARN>` with the ARN of your current IAM user.
+
+	To obtain the current user IAM please follow these steps:
+	
+	* 	From AWS Console Click on **Services** and type in `IAM` in the search bar, then click on the result.
+	*  Click on **Users** on the left menu.
+	*  Locate your username and click on **your username**.
+	*  Note the User ARN in the User ARN field under Summary sectio.
+
 7. Click **create document**
+
+**Custom-ResizeInstanceApproval sample.**
 
 ```
 {
@@ -134,46 +166,53 @@ _**Note :**_
   ]
 }
 ```
+**Execute the Custom Automation Document** 
 
-**Execute automation document (Optional)** 
-
-1. From AWS console, click on Services and type in Systems Manager in the search bar and press enter. 
+1. From AWS console make sure to select the same region as the launched EC2 instance in step 0.
+2. From AWS console, click on Services and type in Systems Manager in the search bar and press enter. 
 	![alt txt](images/step1.png)
 
-2. Click on **Automation** on the left menu.
-3. Search for `ta-automation-approval-autodocs` and click.
-4. Click on **Execute automation**.
-5. Search for the name of the Automation Document created above using the search bar.
-6. Select on the document enter an **Instance Id** and the **Instance Type** you would like to change in the parameter, and click on **Execute automation**. 
+4. Click on **Automation** on the left menu.
+5. Click on **Execute automation**.
+6. In the search bar, search for the name of the Automation Document you created in this step `Custom-ResizeInstanceApproval`
+7. Select on the document then click **Next** 
+8. Under Input parameters enter the Instance Id of the launched EC2 instance in step 0 on `Instance Id` field e.g: i-2daaf3fafads3
+9. Enter the Instance type that you would like this instance to resize to under `Instance type` field e.g: `t2.xlarge`
+10. Click on **Execute**. 
 	![alt txt](images/step5.png)
 
-7. Watch the automation progress by clicking on **Automation** and the running with `ta-automation-approval-autodocs` document name. 
-	![alt txt](images/step6.png)
+11. Notice the number of steps in this document.
+12. Once the first step status is "waiting", you should receive an email from SNS notification asking for owner approval. 
+13. Click on the **approve url** on the body of the email.
+14. Select `Approve`, and click **Submit**
+	![alt txt](images/step6a.png)
 
-8. Wait for an email from SNS notification asking for your approval, click on the approve url and select approve, and proceed with approving the request.
-7. Watch EC2 instance being resized from the normal EC2 console. 
-	![alt txt](images/step7.png)
-
+15. Watch EC2 instance being resized from the normal EC2 console. 
+	
 </p></details>
 
-### Step 3 Creating Lambda Function to trigger Automation Document.
+### Step 3 Creating Instance type decider process and CloudWatch Events Rule.
 
-In this step we will be creating a Lambda Function that will be the decission maker for which EC2 instance type the automation will resize to. There are many possibilities on how the decission can be made, however for the purpose of this workshop, the automation will increase the instance type to the next higher type in the same family e.g: t2.nano to t2.small to t2.medium and so on. Once the lambda decides which EC2 instance to resize to, it will then execute the Automation Document created in previous steps.
+So far, we have created a gated process that will notify owner for their approval before executing EC2 resize. But we do not want to stop there, we would also like to automate the decission making process on deciding which EC2 instance to resize to. There are multiple ways this can be done, depending on requirement and how much data is available for the decission making. But in our scenario, we are going to take the simple approach of resizing the EC2 instance to the next level instance type within the same family. e.g: t2.micro to t2.small to t2.medium and so on. 
 
-_**Note :**_
+In this step we will be creating a Lambda Function that will be the decission maker for which EC2 instance type the automation will resize to. Our lambda function will check the instance type of the existing EC2 instance and increase the type to the next higher level in the same family. Once the lambda decides which EC2 instance to resize to, it will then execute the Automation Document created in previous steps.
+
+We will also create a CloudWatch Events rule that will capture Trusted Advisor events of "High Utilization Amazon EC2 Instances: and set it up to trigger our entire automation.
+
+_**Important :**_
 
 *The following steps must be deployed in us-east-1 region. This is because Trusted Advisor endpoint is only available in us-east-1 therefore events can only be captured in the region. Having said that, Trusted Advisor will still check and emits event for all resources in AWS Account accross all region.*
 
-![alt txt](images/step3-diag-build.png)
+![alt txt](images/step4-diag-build.png)
 
 <details>
 <summary>**[ Click here for detailed steps ]**</summary><p>
 
-1. From AWS console, click on Services and type in Lambda in the search bar and press enter. 
+1. From AWS console make sure to select the us-east-1 region.
+2. From AWS console, click on Services and type in Lambda in the search bar and press enter. 
 	![alt txt](images/step8.png)
-
 2. Click on **Create Function** 
-3. Type in your function **Name**.
+3. Type in your function **Name** as `ta-resize-lambda`.
 4. Set Runtime to **Python3.6**
 5. Select Create custom role, click on **Edit**.
 6. Choose Create a new IAM Role, and type in the role name.
@@ -263,7 +302,7 @@ _**Note :**_
 	}
 	```
 
-7. Copy Paste below Lambda Function Code and click **Save**
+7. Copy Paste below Lambda Function Code.
 	![alt txt](images/step9.png)
 	
 	```
@@ -349,18 +388,64 @@ _**Note :**_
 	    return(event)
 	```
 
-8. Create environment variables with key **ResizeAutoDocument** and the name of the automation document you created on step 2 
+8. Under Environment Variable, create environment variables with key called **ResizeAutoDocument** and the name of the Automation Document created in step 2 `Custom-ResizeInstanceApproval` as the value.
 	![alt txt](images/step12.png)
 
 9. Set the function timeout to 30 seconds or more.
-10. **Save** the Lambda Function
+10. Click **Save** 
+
+**Creating the CloudWatch Events Rule for Trusted Advisor**
+
+1. From AWS console make sure to select the us-east-1 region.
+2. From AWS console, click on Services and type in CloudWatch in the search bar and press enter. 
+	![alt txt](images/step10.png)
+
+3. Click on **Rules** under Events on the left side of the menu screen.
+4. Click **CreateRule**
+5. Click **Edit** on the Event Source section and paste below patten.
+
+	```
+	{
+	  "detail-type": [
+	    "Trusted Advisor Check Item Refresh Notification"
+	  ],
+	  "source": [
+	    "aws.trustedadvisor"
+	  ],
+	  "detail": {
+	    "check-name": [
+	      "High Utilization Amazon EC2 Instances"
+	    ],
+	    "status": [
+	      "WARN"
+	    ]
+	  }
+	}
+	```
+
+6. Click **Add target** 
+7. Select Function you created above `ta-resize-lambda`.
+9. Click **Configure Details** 
+10. Enter `ta-highec2util-events` in the Name field.
+11. Click **Create Rule**
+
+From this point our Lambda and CloudWatch events are ready to recieve events from Trusted Advisor and kick off the EC2 Resize process. But now, lets test it.
 
 
 **Testing your Automation using Lambda Function Test event** 
 
-10. To test your automation you can ceate a Test event in Lambda function and paste below payload.
-11. Copy and paste below content and replace `< instance id >` with instance id in step 0 
-12. Replace `< instance region >` with the region where the instance id is deployed in step 0
+1. From AWS console make sure to select the us-east-1 region.
+2. From AWS console, click on Services and type in Lambda in the search bar and press enter. 
+	![alt txt](images/step8.png)
+3. Using the search bar locate the Lambda function you created in this step `ta-resize-lambda`.
+4. Click on the **functon name**.
+3. Click on **Select a test event** then **Configure test events**
+4. Select Create new test event.
+5. Under Event name field enter `tahighec2utiltestevent`.
+6. In the body of the event, copy and paste below content and replace `< instance id >` with instance id in step 0 
+5. Replace `< instance region >` with the region where the instance id is deployed in step 0
+
+**Lambda Function test event**
 
 	```
 	{
@@ -373,10 +458,10 @@ _**Note :**_
 	}
 	```
 
-13. Save the Test event.
-14. Click Test.
+13. Click **Create**.
+14. ensute the event you created is selected, then click **Test**
 15. This should now trigger the AutomationDocument execution.
-16. Go to Systems Manager Console 
+16. Go to Systems Manager Console in the region where the EC2 instance is provisioned. 
 	![alt txt](images/step1.png)
 
 17. Click on **Automation** on the left menu.
@@ -384,8 +469,6 @@ _**Note :**_
 19. Wait for an email from SNS notification asking for your approval, click on the approve url and select approve, and proceed with approving the request.
 20. Watch EC2 instance being resized from the normal EC2 console. 
 	![alt txt](images/step7.png)
-
-
 
 For visibility here is an example of the event being triggered by TA High Utilization Check.
 	
@@ -432,53 +515,7 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	}
 	
 	```
-</p></details>
-
-### Step 4 Creating CloudWatch Events to trigger Lambda.
-
-In this step we will be creating the CloudWatch Events rule that will capture events from Trusted Advisor for `High Utilization Amazon EC2 Instances` checks and it will subsequently trigger the Lambda function we have created in previous step to kick off the automation.
-
-_**Note :**_
-
-*The following steps must be deployed in us-east-1 region. This is because Trusted Advisor endpoint is only available in us-east-1 therefore events can only be captured in the region. Having said that, Trusted Advisor will still check and emits event for all resources in AWS Account accross all region.*
-
-![alt txt](images/step4-diag-build.png)
-
-<details>
-<summary>[ Click here for detailed steps ]</summary><p>
-
-1. From AWS console, click on Services and type in CloudWatch in the search bar and press enter. 
-	![alt txt](images/step10.png)
-
-2. Click on **Rules** under Events on the left side of the menu screen.
-3. Click **CreateRule**
-4. Click **Edit** on the event source pattern and paste below.
-
-	```
-	{
-	  "detail-type": [
-	    "Trusted Advisor Check Item Refresh Notification"
-	  ],
-	  "source": [
-	    "aws.trustedadvisor"
-	  ],
-	  "detail": {
-	    "check-name": [
-	      "High Utilization Amazon EC2 Instances"
-	    ],
-	    "status": [
-	      "WARN"
-	    ]
-	  }
-	}
-	```
-
-5. Click **Add target** 
-6. Select Function you created on step 3.
-7. Keep everything else default.
-8. Click **Configure Details** 
-
-
+	
 **Testing Automation using Trusted Advisor Mock Event (Optional)** 
 
 Trusted Advisor won't trigger the event until a real EC2 instance has been detected on high util over 14 days, therefore for the purpose of testing end to end solution of this automation you can you can trigger cloudwatch custom event 
@@ -542,6 +579,8 @@ Click Here for instructions on how to install and configure AWS CLI, if you do n
 
 `aws events put-events --entries file://mockpayload.json`
 
+
+	
 </p></details>
 
 
