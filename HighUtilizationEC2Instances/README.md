@@ -109,7 +109,7 @@ _**Note :**_
 	* 	From AWS Console Click on **Services** and type in `IAM` in the search bar, then click on the result.
 	*  Click on **Users** on the left menu.
 	*  Locate your username and click on **your username**.
-	*  Note the User ARN in the User ARN field under Summary sectio.
+	*  Note the User ARN in the User ARN field under Summary section.
 
 7. Click **create document**
 
@@ -530,7 +530,7 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	
 	
 <details>
-<summary> **Option 2** - Testing your automation using Trusted Advisor mock event (Optional)
+<summary> **Option 2** - Test by triggering mock CloudWatch event through AWS CLI ( Optional ).
 </summary><p>
 
 In this step we test our automation by creating a mock CloudWatch Events. We will create another CloudWatch events rule with `awsmock.trustedadvisor` as the source. 
