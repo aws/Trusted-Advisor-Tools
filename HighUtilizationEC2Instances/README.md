@@ -439,7 +439,7 @@ From this point our Lambda and CloudWatch events are ready to recieve events fro
 
 Trusted Advisor won't trigger the event until a real EC2 instance High Utilization has been detected ( This could take some time). Therefore to simulate this, we will simulate our automation by doing one of the following.
  
-**Option 1 - Test your automation by invoking a mock Lambda events**
+**[Option 1] - Test your automation by invoking a mock Lambda events**
 
 In this step we will simulate our automation by invoking the lambda function through the Test Event. We will create a test event in lambda function and pass on a mock Trusted Advisor payload to invoke our automation process.
 
@@ -529,23 +529,23 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	```
 </p></details>
 	
-**Option 2 - Testing your automation using Trusted Advisor mock event (Optional)** 
+**[Option 2] - Testing your automation using Trusted Advisor mock event (Optional)** 
 
 In this step we test our automation by creating a mock CloudWatch Events. We will create another CloudWatch events rule with `awsmock.trustedadvisor` as the source. 
-
+	
 This is because, for security and integrity reasons, access to put custom event to `aws.trustedadvisor` source is not allowed, therefore in below rule we are using `awsmock.trustedadvisor` as the source instead.
-
+	
 <details>
 <summary>[ Click here for detailed steps ]</summary><p>
-
+	
 1. From AWS console, click on Services and type in CloudWatch in the search bar and press enter. 
 	![alt txt](images/step10.png)
-
+	
 2. Click on **Rules** under Events on the left side of the menu screen.
 3. Click **CreateRule**
 4. Click **Edit** on the event source pattern and paste below.
-
-
+	
+	
 	```
 	{
 	  "detail-type": [
@@ -564,7 +564,7 @@ This is because, for security and integrity reasons, access to put custom event 
 	  }
 	}
 	```
-
+	
 5. Click **Add target** 
 6. Select Function you created on step 3.
 7. Keep everything else default.
@@ -572,7 +572,7 @@ This is because, for security and integrity reasons, access to put custom event 
 9. Create a text file and name it **mockpayload.json**
 10. Copy and paste below content and replace `< instance id >` with instance id in step 0 
 11. Replace `< instance region >` with the region where the instance id is deployed in step 0
-
+	
 	```
 	[
 	  {
@@ -587,13 +587,13 @@ This is because, for security and integrity reasons, access to put custom event 
 	```
 	
 *This custom event payload will represent the Trusted Advisor event for this scenario.*
-
+	
 Once you've configured the above rule, and created the **mockpayload.json** file you can trigger the automation by putting a a custom CloudWatch event with below command.
 This step will require you to have AWS CLI installed in your laptop. 
 Click Here for instructions on how to install and configure AWS CLI, if you do not have them installed.
-
+	
 `aws events put-events --entries file://mockpayload.json`
-
+	
 </p></details>
 
 ## CloudFormation Template (Optional)
