@@ -530,7 +530,7 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	
 	
 <details>
-<summary> **Option 2** -Testing your automation using Trusted Advisor mock event (Optional)
+<summary> **Option 2** - Testing your automation using Trusted Advisor mock event (Optional)
 </summary><p>
 
 In this step we test our automation by creating a mock CloudWatch Events. We will create another CloudWatch events rule with `awsmock.trustedadvisor` as the source. 
