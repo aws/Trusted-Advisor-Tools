@@ -430,9 +430,21 @@ _**Important :**_
 11. Click **Create Rule**
 
 From this point our Lambda and CloudWatch events are ready to recieve events from Trusted Advisor and kick off the EC2 Resize process. But now, lets test it.
+	
+</p></details>
 
 
-**Testing your Automation using Lambda Function Test event** 
+
+### Step 4 - Testing your Automation
+
+Trusted Advisor won't trigger the event until a real EC2 instance High Utilization has been detected ( This could take some time). Therefore to simulate this, we will simulate our automation by doing one of the following.
+ 
+**Option 1 - Test your automation by invoking a mock Lambda events**
+
+In this step we will simulate our automation by invoking the lambda function through the Test Event. We will create a test event in lambda function and pass on a mock Trusted Advisor payload to invoke our automation process.
+
+<details>
+<summary>[ Click here for detailed steps ]</summary><p>
 
 1. From AWS console make sure to select the us-east-1 region.
 2. From AWS console, click on Services and type in Lambda in the search bar and press enter. 
@@ -515,14 +527,16 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	}
 	
 	```
+</p></details>
 	
-**Testing Automation using Trusted Advisor Mock Event (Optional)** 
+**Option 2 - Testing your automation using Trusted Advisor mock event (Optional)** 
 
-Trusted Advisor won't trigger the event until a real EC2 instance has been detected on high util over 14 days, therefore for the purpose of testing end to end solution of this automation you can you can trigger cloudwatch custom event 
+In this step we test our automation by creating a mock CloudWatch Events. We will create another CloudWatch events rule with `awsmock.trustedadvisor` as the source. 
 
-To do that you will need to create another CloudWatch events rule with below pattern. Note that the only difference between this rule and the one configured previously is the source. 
+This is because, for security and integrity reasons, access to put custom event to `aws.trustedadvisor` source is not allowed, therefore in below rule we are using `awsmock.trustedadvisor` as the source instead.
 
-For security and integrity purposes, access to put custom event as `aws.trustedadvisor` source is not allowed, therefore in below rule we are using `awsmock.trustedadvisor` instead.
+<details>
+<summary>[ Click here for detailed steps ]</summary><p>
 
 1. From AWS console, click on Services and type in CloudWatch in the search bar and press enter. 
 	![alt txt](images/step10.png)
@@ -571,6 +585,7 @@ For security and integrity purposes, access to put custom event as `aws.trusteda
 	]
 	
 	```
+	
 *This custom event payload will represent the Trusted Advisor event for this scenario.*
 
 Once you've configured the above rule, and created the **mockpayload.json** file you can trigger the automation by putting a a custom CloudWatch event with below command.
@@ -579,10 +594,7 @@ Click Here for instructions on how to install and configure AWS CLI, if you do n
 
 `aws events put-events --entries file://mockpayload.json`
 
-
-	
 </p></details>
-
 
 ## CloudFormation Template (Optional)
 
