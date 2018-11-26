@@ -438,13 +438,12 @@ From this point our Lambda and CloudWatch events are ready to recieve events fro
 ### Step 4 - Testing your Automation
 
 Trusted Advisor won't trigger the event until a real EC2 instance High Utilization has been detected ( This could take some time). Therefore to simulate this, we will simulate our automation by doing one of the following.
- 
-**[Option 1] - Test your automation by invoking a mock Lambda events**
-
-In this step we will simulate our automation by invoking the lambda function through the Test Event. We will create a test event in lambda function and pass on a mock Trusted Advisor payload to invoke our automation process.
 
 <details>
-<summary>[ Click here for detailed steps ]</summary><p>
+<summary> **Option 1** - Test your automation by invoking a mock Lambda events
+</summary><p>
+
+In this step we will simulate our automation by invoking the lambda function through the Test Event. We will create a test event in lambda function and pass on a mock Trusted Advisor payload to invoke our automation process.
 
 1. From AWS console make sure to select the us-east-1 region.
 2. From AWS console, click on Services and type in Lambda in the search bar and press enter. 
@@ -529,15 +528,15 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	```
 </p></details>
 	
-**[Option 2] - Testing your automation using Trusted Advisor mock event (Optional)** 
+	
+<details>
+<summary> **Option 2** -Testing your automation using Trusted Advisor mock event (Optional)
+</summary><p>
 
 In this step we test our automation by creating a mock CloudWatch Events. We will create another CloudWatch events rule with `awsmock.trustedadvisor` as the source. 
 	
 This is because, for security and integrity reasons, access to put custom event to `aws.trustedadvisor` source is not allowed, therefore in below rule we are using `awsmock.trustedadvisor` as the source instead.
-	
-<details>
-<summary>[ Click here for detailed steps ]</summary><p>
-	
+
 1. From AWS console, click on Services and type in CloudWatch in the search bar and press enter. 
 	![alt txt](images/step10.png)
 	
