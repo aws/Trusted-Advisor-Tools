@@ -1,5 +1,5 @@
 
-#Trusted Advisor Automation against High Utilization EC2 Instance
+# Trusted Advisor Automation against High Utilization EC2 Instance
 
 Trusted Advisor checks the Amazon Elastic Compute Cloud (Amazon EC2) instances that were running at any time during the last 14 days and alerts you if the daily CPU utilization was more than 90% on 4 or more days. Consistent high utilization can indicate optimized, steady performance, but it can also indicate that an application does not have enough resources. To get daily CPU utilization data, download the report for this check. These steps will go through the how to set up automated EC2 instance resize with approval. 
 
@@ -440,7 +440,7 @@ From this point our Lambda and CloudWatch events are ready to recieve events fro
 Trusted Advisor won't trigger the event until a real EC2 instance High Utilization has been detected ( This could take some time). Therefore to simulate this, we will simulate our automation by doing one of the following.
 
 <details>
-<summary> **Option 1** - Test your automation by invoking a mock Lambda events
+<summary> Option 1 - Test your automation by invoking a mock Lambda events
 </summary><p>
 
 In this step we will simulate our automation by invoking the lambda function through the Test Event. We will create a test event in lambda function and pass on a mock Trusted Advisor payload to invoke our automation process.
@@ -530,7 +530,7 @@ For visibility here is an example of the event being triggered by TA High Utiliz
 	
 	
 <details>
-<summary> **Option 2** - Test by triggering mock CloudWatch event through AWS CLI ( Optional ).
+<summary> Option 2 - Test by triggering mock CloudWatch event through AWS CLI ( Optional ).
 </summary><p>
 
 In this step we test our automation by creating a mock CloudWatch Events. We will create another CloudWatch events rule with `awsmock.trustedadvisor` as the source. 
