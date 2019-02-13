@@ -499,7 +499,7 @@ To trigger mock event run below command. ( Require AWS CLI )
 
 `aws events put-events --entries file://mockpayload.json`
 
-**mockpayload.josn**
+**mockpayload.json**
 
 ```
 [
