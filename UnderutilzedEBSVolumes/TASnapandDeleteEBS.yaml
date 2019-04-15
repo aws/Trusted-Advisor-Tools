@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Automatically snapshot and delete EBS volumes that have not been attached to an
-  instance for more than 30 days. This action is triggered by Trusted Advisor using
-  Amazon Cloudwatch events and AWS Lambda
+  Automatically snapshot and delete EBS volumes that have not been attached to an instance for more than 30 days. This action is triggered by Trusted Advisor using Amazon Cloudwatch events and AWS Lambda.
+
+  Warning: do not install or activate this automation in environments where EBS volumes should not be deleted (e.g. where the data is needed immediately and restoring from snapshot is not an option).  
 Metadata:
   LICENSE: >-
-    Copyright 2017 Amazon Web Services, Inc. or its affiliates. All Rights
+    Copyright 2019 Amazon Web Services, Inc. or its affiliates. All Rights
     Reserved. This file is licensed to you under the AWS Customer Agreement (the
     "License"). You may not use this file except in compliance with the License.
     A copy of the License is located at http://aws.amazon.com/agreement/ . This

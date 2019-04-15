@@ -2,6 +2,8 @@
 
 Underutilized EBS volumes can occur for a number of reasons. Over time the cost of these volumes can become substantial. This application can dramatically reduce your EBS costs by safely deleting EBS volumes that are not attached to an instance and have not been attached for many days.
 
+Warning: do not install or activate this automation in environments where EBS volumes should not be deleted (e.g. where the data is needed immediately and restoring from snapshot is not an option).  
+
 ## Overview
 
 Please note that this is an example of how to setup automation with Trusted Advisor, Cloudwatch, SNS, and Lambda. We strongly recommend testing it and tailoring to your environment before using in your production environment.
