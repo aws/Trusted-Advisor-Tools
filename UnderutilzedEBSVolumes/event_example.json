@@ -1,0 +1,55 @@
+{
+	"version": "0",
+	"id": "0fd296eb-ccf3-55d6-e4ea-c2dda37276bc",
+	"detail-type": "Trusted Advisor Check Item Refresh Notification",
+	"source": "aws.trustedadvisor",
+	"account": "123412341234",
+	"time": "2019-04-02T18:24:41Z",
+	"region": "us-east-1",
+	"resources": [],
+	"detail": {
+		"check-name": "Underutilized Amazon EBS Volumes",
+		"check-item-detail": {
+			"Volume Type": "General purpose(SSD)",
+			"Volume ID": "vol-0c5a286715785d467",
+			"Volume Size": "1000",
+			"Snapshot Name": null,
+			"Region": "us-east-1",
+			"Snapshot ID": null,
+			"Monthly Storage Cost": "$100.00",
+			"Volume Name": null,
+			"Snapshot Age": null
+		},
+		"status": "WARN",
+		"resource_id": "arn:aws:ec2:us-east-1:123412341234:volume/vol-0c5a286715785d467",
+		"uuid": "177de169-e24c-4221-8f9b-48c738a139de"
+	}
+}
+
+{
+	"version": "0",
+	"id": "0fd296eb-ccf3-55d6-e4ea-c2dda37276bc",
+	"detail-type": "Trusted Advisor Check Item Refresh Notification",
+	"source": "aws.trustedadvisor",
+	"account": "123412341234",
+	"time": "2019-04-02T18:24:41Z",
+	"region": "us-east-2",
+	"resources": [],
+	"detail": {
+		"check-name": "Underutilized Amazon EBS Volumes",
+		"check-item-detail": {
+			"Volume Type": "General purpose(SSD)",
+			"Volume ID": "vol-0d84605d40b6932fc",
+			"Volume Size": "1000",
+			"Snapshot Name": null,
+			"Region": "us-east-2",
+			"Snapshot ID": null,
+			"Monthly Storage Cost": "$100.00",
+			"Volume Name": null,
+			"Snapshot Age": null
+		},
+		"status": "WARN",
+		"resource_id": "arn:aws:ec2:us-east-2:123412341234:volume/vol-0d84605d40b6932fc",
+		"uuid": "177de169-e24c-4221-8f9b-48c738a139de"
+	}
+}

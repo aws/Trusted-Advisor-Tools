@@ -1,0 +1,206 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Automatically snapshot and delete EBS volumes that have not been attached to an instance for more than 30 days. This action is triggered by Trusted Advisor using Amazon Cloudwatch events and AWS Lambda.
+
+  Warning: do not install or activate this automation in environments where EBS volumes should not be deleted (e.g. where the data is needed immediately and restoring from snapshot is not an option).  
+Metadata:
+  LICENSE: >-
+    Copyright 2019 Amazon Web Services, Inc. or its affiliates. All Rights
+    Reserved. This file is licensed to you under the AWS Customer Agreement (the
+    "License"). You may not use this file except in compliance with the License.
+    A copy of the License is located at http://aws.amazon.com/agreement/ . This
+    file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+    ANY KIND, express or implied. See the License for the specific language
+    governing permissions and limitations under the License.
+Parameters:
+  Mailto:
+    Description: Email address to send reports to.
+    Type: 'String'
+  Mailfrom:
+    Description: Email address to send reports from. You must validate this email address in SES.
+    Type: 'String'
+  IdleThresh:
+    Description: Minimum number of days a volume is unattached before being deleted by this automation.
+    Type: 'String'
+  EnableActions:
+    Description: Indicates whether the automation is active. Note that snapshots are taken regardless of this setting. This controls the active deletion of the volume.
+    Type: 'String'
+    Default: 'False'
+  S3CodeBucket:
+    Description: Name of the S3 bucket containing the application zip file.
+    Type: 'String'
+  S3CodeKey:
+    Description: Key for the zip file.
+    Type: 'String'
+    Default: 'TAEBSVolDel.py.zip'
+Resources:
+  LambdaIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'TAEBSVolumeSnapDelRole'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: TAEBSVolumeSnapDel
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: LambdaLogging
+                Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource:
+                  - 'arn:aws:logs:*:*:*'
+              - Sid: Ec2Actions
+                Action:
+                  - 'cloudtrail:LookupEvents'
+                  - 'ec2:Describe*'
+                  - 'ec2:DeleteVolume'
+                Effect: Allow
+                Resource: '*'
+              - Sid: SESPerms
+                Action:
+                  - 'ses:SendEmail'
+                Effect: Allow
+                Resource: '*'
+              - Sid: Snapshots
+                Action:
+                  - 'ec2:ModifySnapshotAttribute'
+                  - 'ec2:CreateSnapshot'
+                  - 'ec2:DeleteSnapshot'
+                Effect: Allow
+                Resource: '*'
+              - Sid: SnapTags
+                Action:
+                  - 'ec2:CreateTags'
+                Effect: Allow
+                Resource: 'arn:aws:ec2:*::snapshot/*'
+              - Sid: CWEvents
+                Action:
+                  - 'events:DescribeRule'
+                  - 'events:PutRule'
+                  - 'events:DeleteRule'
+                  - 'events:EnableRule'
+                  - 'events:DisableRule'
+                  - 'events:PutTargets'
+                  - 'events:RemoveTargets'
+                Effect: Allow
+                Resource: 'arn:aws:events:*:*:rule/EBSSnapshotComplete'
+              - Sid: SNSTopic
+                Action:
+                  - 'sns:CreateTopic'
+                  - 'sns:Subscribe'
+                  - 'sns:SetTopicAttributes'
+                  - 'sns:Get*'
+                  - 'sns:List*'
+                Effect: Allow
+                Resource: '*'
+              - Sid: MyLambda
+                Action:
+                  - 'lambda:AddPermission'
+                Effect: Allow
+                Resource: 'arn:aws:lambda:us-east-1:*:function:TAEBSVolumeSnapDelete'
+  TAEBSVolumeSnapDelLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: "TAEBSVolumeSnapDelete"
+      Environment:
+        Variables:
+          'IdleThresh': !Ref IdleThresh
+          'MailTo': !Ref Mailto
+          'FromEmail': !Ref Mailfrom
+          'EnableActions': !Ref EnableActions
+      Code:
+        S3Bucket: !Ref S3CodeBucket
+        S3Key: !Ref S3CodeKey
+      Handler: 'TAEBSVolDel.lambda_handler'
+      Role: !GetAtt
+        - LambdaIAMRole
+        - Arn
+      Runtime: 'python3.7'
+      Timeout: '120'
+  SNSTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      DisplayName: TAEBSVolSnapDelTopic
+      TopicName: TAEBSVolSnapDelTopic
+      Subscription:
+        -
+          Endpoint:
+            !GetAtt
+              - TAEBSVolumeSnapDelLambda
+              - Arn
+          Protocol: "Lambda"
+  SNSTopicPolicy:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: TrustCloudWatchRules
+            Principal:
+              Service: 'events.amazonaws.com'
+            Effect: Allow
+            Action:
+              - 'sns:Publish'
+            Resource:
+              - !Ref SNSTopic
+      Topics:
+        - !Ref SNSTopic
+  CloudWatchEventRuleTA:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Name: 'TAUnderutilizedEBS'
+      Description: Underutilized EBS Volume TA Refresh Notification
+      EventPattern:
+        source:
+          - aws.trustedadvisor
+        detail-type:
+          - Trusted Advisor Check Item Refresh Notification
+        detail:
+          status:
+            - WARN
+          check-name:
+            - Underutilized Amazon EBS Volumes
+      State: "ENABLED"
+      Targets:
+        - Arn: !Ref SNSTopic
+          Id: "TAEBSUnderutilized"
+    DependsOn: "TAEBSVolumeSnapDelLambda"
+  CloudWatchEventRuleSnap:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Name: 'EBSSnapshotComplete'
+      Description: Snapshot complete Notification
+      EventPattern:
+        source:
+          - aws.ec2
+        detail-type:
+          - EBS Snapshot Notification
+        detail:
+          event:
+            - createSnapshot
+          result:
+            - succeeded
+      State: "ENABLED"
+      Targets:
+        - Arn: !Ref SNSTopic
+          Id: "SnapshotCompleted"
+    DependsOn: "TAEBSVolumeSnapDelLambda"
+  SnsToLambdaPermissions:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName: !GetAtt
+        - TAEBSVolumeSnapDelLambda
+        - Arn
+      Action: "lambda:InvokeFunction"
+      Principal: "sns.amazonaws.com"
+      SourceArn: !Ref SNSTopic
