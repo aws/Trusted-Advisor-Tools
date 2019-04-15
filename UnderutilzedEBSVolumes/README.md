@@ -51,6 +51,12 @@ For this application to work cross-region the Lambda creates some additional inf
 
 Note that this application must be loaded in **US-EAST-1**, regardless of your cloud deployments. It runs outside of VPC and needs access to Trusted Advisor events. Trusted Advisor is a Global service that runs only in US-EAST-1. For more information, please contact your AWS Account Team.
 
+Choose **Launch Stack** to launch the CloudFormation template in the US East (N. Virginia) Region in your account:
+
+[![Launch Launch Snap and Delete Underutilized EBS Volumes](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=EBSSnapDelVols&templateURL=https://s3-us-west-2.amazonaws.com/aws-trusted-advisor-open-source/cloudformation-templates/TASnapandDeleteEBS-1click.yaml)
+
+Alternatively, you can use the following instructions to install from your own S3 bucket:
+
 1. Extract this zip file to a convenient location on your computer
 2. Upload the contents to a folder on an S3 bucket *in US-EAST-1*.
 3. From S3, get the url of the file **TASnapandDeleteEBS.yaml**
