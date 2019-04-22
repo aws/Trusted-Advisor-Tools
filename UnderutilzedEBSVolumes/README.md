@@ -55,7 +55,7 @@ For this application to work cross-region the Lambda creates some additional inf
 
 Choose **Launch Stack** to launch the CloudFormation template in the US East (N. Virginia) Region in your account:
 
-[![Launch Launch Snap and Delete Underutilized EBS Volumes](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=EBSSnapDelVols&templateURL=https://s3-us-west-2.amazonaws.com/aws-trusted-advisor-open-source-us-east-1/cloudformation-templates/TASnapandDeleteEBS-1click.yaml)
+[![Launch Launch Snap and Delete Underutilized EBS Volumes](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=EBSSnapDelVols&templateURL=https://s3-us-west-2.amazonaws.com/aws-trusted-advisor-open-source-us-east-1/cloudformation-templates/TAT-EBS/TASnapandDeleteEBS-1click.yaml)
 
 Alternatively, you can use the following instructions to install from your own S3 bucket:
 
