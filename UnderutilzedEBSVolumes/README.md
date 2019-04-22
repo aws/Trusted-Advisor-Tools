@@ -2,15 +2,15 @@
 
 Underutilized EBS volumes can occur for a number of reasons. Over time the cost of these volumes can become substantial. This application can dramatically reduce your EBS costs by safely deleting EBS volumes that are not attached to an instance and have not been attached for many days.
 
-Warning: do not install or activate this automation in environments where EBS volumes should not be deleted (e.g. where the data is needed immediately and restoring from snapshot is not an option).  
+**Warning:** do not install or activate this automation in environments where EBS volumes should not be deleted (e.g. where the data is needed immediately and restoring from snapshot is not an option).  
 
 ## Overview
 
-Please note that this is an example of how to setup automation with Trusted Advisor, Cloudwatch, SNS, and Lambda. We strongly recommend testing it and tailoring to your environment before using in your production environment.
+This is an example of how to setup cross-region automation with Trusted Advisor, Cloudwatch, SNS, and Lambda. We strongly recommend testing it and tailoring to your environment before using in your production environment.
 
 This is a serverless (Lambda) application that reacts to Trusted Advisor warnings via CloudWatch rules to detect and delete Underutilized EBS volumes - volumes that have been unattached or had low I/O for a number of days. The app will only delete idle, unattached volumes after successfully taking a snapshot. It sends an email with information on how to recover the volume from the snapshot.
 
-This application is an example of decoupling and asynchronous processing. Trusted Advisor detects a condition. I CloudWatch Event Rule recognizes the event and sends it to a Lambda for processing. The Lambda creates a snapshot. Processing for that event ends. The snapshot's completion event is picked up and routed to, in this case, the same Lambda only when successful. The Lambda completes processing by deleting the volume and notifying the owner. This could be further decoupled by paring off the notification process and using Amazon SQS to queue the notifications for processing.
+This application is an example of decoupling and asynchronous processing. Trusted Advisor detects a condition. A CloudWatch Event Rule recognizes the event and sends it to a Lambda function for processing. The Lambda creates a snapshot and processing for that event ends. The successful snapshot's completion event is picked up by a CloudWatch Event Rule and routed to the same Lambda function. The Lambda completes processing by deleting the volume and notifying the owner. Note that this could be further decoupled by paring off the notification process and using Amazon SQS to queue the notifications for processing.
 
 This application makes use of several service APIs:
 
@@ -19,6 +19,8 @@ This application makes use of several service APIs:
 - EC2 to get volume and snapshot information, create snapshots, and delete volumes
 - SES to send email notifications
 - CloudTrail to search attachment history
+
+The principle of least privilege is followed such that the Lambda function has only the access required to perform its tasks.
 
 ### Automatic Volume Deletion
 
@@ -30,7 +32,7 @@ This application makes use of several service APIs:
 
 ### How it Works
 
-1. Trusted Advisor updates automatically every 24 hours. An event is sent to CloudTrail for any findings. Each "Underutilized EBS Volume" finding is picked up by a CloudWatch rule and routed to the TAEBSVolumeSnapDelete Lambda
+1. Trusted Advisor updates automatically every 24 hours. Events are sent to CloudTrail in the US-EAST-1 region for any findings. Each "Underutilized EBS Volume" finding is picked up by a CloudWatch Event Rule and routed to the TAEBSVolumeSnapDelete Lambda
 2. The Lambda function:
 	* Checks the number of days the volume has not been attached to an instance
 	* Checks for the ExceptTag tag on the volume and ignores the volume if found
@@ -41,22 +43,29 @@ This application makes use of several service APIs:
 
 #### Cross-Region Details ####
 
-This application is also a good example of cross-region automation. The main component, the Lambda function, runs in US-EAST-1. Since the application runs in the control plane, it does not require a VPC or internet access and has no access to customer data; only to customer infrastructure.
+This application is also an example of cross-region automation. The main component, the Lambda function, runs in US-EAST-1. Since the application runs in the control plane, it does not require a VPC or internet access and has no access to customer data; only to customer infrastructure.
 
-For this application to work cross-region the Lambda creates some additional infrastructure. In each region it will create an SNS topic, **TAEBSVolSnapDelTopic**, that is allowed to send notifications to the US-EAST-1 Lambda, **TAEBSVolumeSnapDelete**. It creates a CloudWatch Event Rule in each region to recognize Snapshot completion. All Snapshot events are sent from the rule to the topic to the Lambda. Snapshots that are not for volume deletion (do not have the **SnapshotReason=Idle Volume** tag) are ignored.
+For this application to work cross-region the Lambda creates some additional infrastructure. In each region it will create an SNS topic, **TAEBSVolSnapDelTopic**, that is allowed to send notifications to the US-EAST-1 Lambda, **TAEBSVolumeSnapDelete**. It creates a CloudWatch Event Rule in each region to recognize Snapshot completion. All Snapshot events are sent from the rule to the SNS Topic to the Lambda via SNS subscription. Snapshots that are not for volume deletion (do not have the **SnapshotReason=Idle Volume** tag) are ignored.
 
 ![Flow Diagram](./TAUnderutilizedEBS.yaml.png "Flow")
 
 ## Installation
 
-Note that this application must be loaded in **US-EAST-1**, regardless of your cloud deployments. It runs outside of VPC and needs access to Trusted Advisor events. Trusted Advisor is a Global service that runs only in US-EAST-1. For more information, please contact your AWS Account Team.
+**Important:** This application must be loaded in **US-EAST-1**, regardless of your cloud deployments. It runs outside of VPC and needs access to Trusted Advisor events. Trusted Advisor is a Global service that runs only in US-EAST-1. For more information, please contact your AWS Account Team.
 
-1. Extract this zip file to a convenient location on your computer
-2. Upload the contents to a folder on an S3 bucket *in US-EAST-1*.
-3. From S3, get the url of the file **TASnapandDeleteEBS.yaml**
-4. Use CloudFormation to install the template from S3 using the url copied in Step 3
-5. Configure the template parameters as described in **Configuration** below. You will need the bucket name and prefix (folder) where you uploaded the zip file contents.
-6. After successful completion, run in EnableActions=False mode until you are comfortable with the results. See **Testing**
+Choose **Launch Stack** to launch the CloudFormation template in the US East (N. Virginia) Region in your account:
+
+[![Launch Launch Snap and Delete Underutilized EBS Volumes](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=EBSSnapDelVols&templateURL=https://aws-trusted-advisor-open-source-us-east-1.s3.amazonaws.com/cloudformation-templates/TASnapandDeleteEBS-1click.yaml)
+
+Alternatively, you can use the following instructions to install from your own S3 bucket:
+
+1. Download http://http://aws-trusted-advisor-open-source-us-east-1.s3.amazonaws.com/cloudformation-templates/TAT-UEBS/TASnapandDelete.zip
+2. Extract the TASnapandDelete.zip file to a convenient location on your computer
+3. Upload the contents to a folder on an S3 bucket *in US-EAST-1*.
+4. From S3, get the url of the file **TASnapandDeleteEBS.yaml**
+5. Use CloudFormation to install the template from S3 using the url copied in Step 3
+6. Configure the template parameters as described in **Configuration** below. You will need the bucket name and prefix (folder) where you uploaded the zip file contents.
+7. After successful completion, run in EnableActions=False mode until you are comfortable with the results. See **Testing**
 
 ## Configuration
 
