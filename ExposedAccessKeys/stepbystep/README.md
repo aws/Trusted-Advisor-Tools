@@ -178,14 +178,14 @@ def lambda_handler(event, context):
 
 
 def get_events(username, starttime, endtime):
-    """ Retrieves detailed list of CloudTrail events that occured between the specified time interval.
+    """ Retrieves detailed list of CloudTrail events that occurred between the specified time interval.
     Args:
         username (string): Username to lookup CloudTrail events for.
         starttime(datetime): Start of interval to lookup CloudTrail events between.
         endtime(datetime): End of interval to lookup CloudTrail events between.
     Returns:
         (dict)
-        Dictionary containing list of CloudTrail events occuring between the start and end time with detailed information for each event.
+        Dictionary containing list of CloudTrail events occurring between the start and end time with detailed information for each event.
     """
     try:
         response = cloudtrail.lookup_events(
@@ -207,12 +207,12 @@ def get_events(username, starttime, endtime):
 
 
 def get_events_summaries(events):
-    """ Summarizes CloudTrail events list by reducing into counters of occurences for each event, resource name, and resource type in list.
+    """ Summarizes CloudTrail events list by reducing into counters of occurrences for each event, resource name, and resource type in list.
     Args:
         events (dict): Dictionary containing list of CloudTrail events to be summarized.
     Returns:
         (list, list, list)
-        Lists containing name:count tuples of most common occurences of events, resource names, and resource types in events list.
+        Lists containing name:count tuples of most common occurrences of events, resource names, and resource types in events list.
     """
     event_name_counter = collections.Counter()
     resource_name_counter = collections.Counter()
@@ -376,7 +376,7 @@ def publish_msg(subject, message):
 
 
 
-### Step 5 Creating the IAM role for the Step Funcion.
+### Step 5 Creating the IAM role for the Step Function.
 <details>
 <summary>**[ Click here for detailed steps ]**</summary><p>
 
@@ -397,7 +397,7 @@ def publish_msg(subject, message):
 <summary>**[ Click here for detailed steps ]**</summary><p>
 
 1. From AWS console, click on Services and type in Step Functions in the search bar and press enter. ![alt txt](images/step_stepfunctions.png)
-2. If this is the first time using AWS Steup Functions click on **Get started**, otherwise click on **Create state machine**
+2. If this is the first time using AWS Step Functions click on **Get started**, otherwise click on **Create state machine**
 3. Select **Author from scratch** 
 3. In the Details panel, enter a name for your Step Function. **Example**: *ta-step-function*
 5. On the State machine definition panel, copy the following ASL definition:
@@ -474,7 +474,7 @@ def publish_msg(subject, message):
 
 *Note: This solution will delete the key specified in the mock event. Please ensure the user/key in the mock event is not used in any production workload.*
 
-To test this solution we don't want to have our keys exposed. You can trigger a mock event by creating a new rule below, follow the same step above but change the Event Pattern to this:
+Given that we don't want to actually expose our keys, we will emulate the scenario by triggering the workflow with a mock event. You can trigger a mock event by creating a new rule below, follow the same step above but change the Event Pattern to this:
 
 ```
 {
