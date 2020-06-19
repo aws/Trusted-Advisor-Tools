@@ -85,7 +85,7 @@ Resources:
         Statement:
           - Effect: "Allow"
             Principal:
-              Service: states.us-east-1.amazonaws.com
+              Service: states.amazonaws.com
             Action: "sts:AssumeRole"
       Path: "/"
       Policies:
