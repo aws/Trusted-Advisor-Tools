@@ -67,8 +67,8 @@
                                 "// define configuration",
                                 "const tagKey ='environment';",
                                 "const tagValue ='dev';",
-								"const dryRun ='true'; //set to false during testing ",
-                                "const regionSpecification = 'eu-west-1'; //Specify a region to restrict the EC2 Stop Instances action to. Use 'all' for all regions",
+				"const dryRun =true; //set to true during testing ",
+                                "const regionSpecification = 'us-east-1'; //Specify a region to restrict the EC2 Stop Instances action to. Use 'all' for all regions",
                                 "",
                                 "//main function which gets Trusted Advisor data from Cloudwatch event",
                                 "exports.handler = (event, context, callback) => {",
@@ -133,7 +133,7 @@
                         "Arn"
                     ]
                 },
-                "Runtime": "nodejs8.10",
+                "Runtime": "nodejs10.x",
                 "Timeout": 60
             },
             "Type": "AWS::Lambda::Function"
