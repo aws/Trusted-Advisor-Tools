@@ -114,7 +114,7 @@
                         "Arn"
                     ]
                 },
-                "Runtime": "nodejs10.x",
+                "Runtime": "nodejs14.x",
                 "Timeout": 60
             },
             "Type": "AWS::Lambda::Function"
