@@ -102,7 +102,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: delete_access_key_pair.lambda_handler
-      Runtime: python3.6
+      Runtime: python3.9
       CodeUri: ../lambda_functions/
       Role: !GetAtt LambdaDeleteAccessKeyPairRole.Arn
  
@@ -110,7 +110,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lookup_cloudtrail_events.lambda_handler
-      Runtime: python3.6
+      Runtime: python3.9
       CodeUri: ../lambda_functions/
       Role: !GetAtt LambdaLookupCloudTrailEventsRole.Arn
  
@@ -118,7 +118,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: notify_security.lambda_handler
-      Runtime: python3.6
+      Runtime: python3.9
       CodeUri: ../lambda_functions/
       Role: !GetAtt LambdaSnsPublishRole.Arn
       Environment:
