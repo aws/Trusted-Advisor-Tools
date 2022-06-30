@@ -28,7 +28,7 @@ Create an incoming Slack Webhook. Incoming webhooks are a simple way to post mes
 
 Refer to the link below for instructions to create an incoming Slack webhook https://api.slack.com/messaging/webhooks
 
-Copy and save the Slack webhook URL somewhere in a local text file. We will use it later when deploying the solution. Pass this ULR to the Lambda function to post curated events from Trusted Advisor to a Slack channel.
+Copy and save the Slack webhook URL somewhere in a local text file. We will use it later when deploying the solution. Pass this URL to the Lambda function to post curated events from Trusted Advisor to a Slack channel.
 
 The webhook URL should look something like this https://hooks.slack.com/workflows/T01234ABCD/A03PQRST/12345678/ab6c20hdWBZabcd
 
