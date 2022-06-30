@@ -1,11 +1,11 @@
-## Trusted_Advisor-3rd-Paty-Integrations
+## AWS Trusted Advisor 3rd-Party Integration Solutions
 
 ##### Contributors: AWS Internal TA Champions Team
 
 ### Description/Use-case
-Use these solutions to integrate AWS Trusted Advisor with 3rd party tools, for example Slack. This is a sample project, we expect our customers to review and test it before using for production use.
+Use these solutions to integrate AWS Trusted Advisor with 3rd party tools, for example Slack. These solutions provide sample code for AWS customers to review, test and implement, as needed.
 
-Use any of these sample automated solution to integrate and get notified for AWS Trusted Advisor findings to your respecive 3rd party tools, and customers can develop their own to integrate with additional tools of their choice. 
+Use any of these sample automated solutions to integrate and get notified for AWS Trusted Advisor findings to your respecive 3rd party tools. Customers can develop their own to integrate with additional tools of their choice. 
 
 High priority Trusted Advisor checks require further investigation as they help you secure and optimize your account to align with AWS best practices. Notifications are classified by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits) and sent to your preferred monitoring or DevOps tools at a preconfigured interval. Configure the notification interval as a scheduled event rule in Amazon EventBridge. Modify the included python script to customize the solution further to meet your requirements.
 

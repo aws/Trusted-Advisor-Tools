@@ -1,14 +1,14 @@
-## Slack Integration to post Trusted Advisor Red Findings, w/ Monthly Estimated Costs Savings in an Account
+## Slack Integration to post Trusted Advisor Red Findings, w/ Monthly Estimated Cost Savings
 
 ##### Authors: Manas Satpathi and Sandeep Mohanty
 
 ### Description/Use-case
 
-Use this solution to report all RED findings from AWS Trusted Advisor for an AWS account to your preferred Slack channel. It also reports the estimated monthly savings reported by Trusted Advisor.
+Use this solution to integrate AWS Trusted Advisor (TA) with your preferred Slack channel. It posts TA High Risk (RED) findings, and the estimated monthly savings reported by Trusted Advisor, for an AWS Account.
 
-Use this automated solution to get notified for AWS Trusted Advisor findings with status red/error (actions required). High priority Trusted Advisor checks require further investigation as they help you secure and optimize your account to align with AWS best practices. Notifications are classified by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits) and sent to Slack at a preconfigured interval.  Configure the notification interval as a scheduled event rule in Amazon EventBridge. Modify the included python script to customize the solution further to meet your requirements.
+Use this automated solution to get notified for AWS Trusted Advisor findings with status red/error (actions required). High priority Trusted Advisor checks require further investigation as they help you secure and optimize your account to align with AWS best practices. Notifications are classified by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits) and sent to Slack at a preconfigured interval. Configure the notification interval as a scheduled event rule in Amazon EventBridge. Modify the included python script to customize the solution further to meet your requirements.
 
-An example Slack channel posting using this sample project -
+### An example Slack channel posting
 
 === Summary of TA High Risk (RED) Findings ===
 Total High Risk (RED) Findings: 18 (Security: 8, Fault-Tolerance: 4, Performance: 6)
@@ -48,7 +48,7 @@ More information about AWS Trusted Advisor is available here: https://aws.amazon
 
     3. Lambda invokes Trusted Advisor APIs to get the current point in time status of all checks that are in the RED (Action Required) state
 
-    4. Lambda formats the response from Trusted Advisor, and sends a summary of all checks, along with details of all open high-risk items to Slack, organized by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits).
+    4. Lambda formats the response from Trusted Advisor, and sends a summary of all checks, along with details of all open high-risk items to Slack, and estimated cost savings for the account.
 
 ### Deploy the solution
 
