@@ -1,6 +1,6 @@
-# Trusted_Advisor-3rd-Paty-Integrations
+# Trusted_Advisor-3rd-Party-Integrations
 # Authors: Manas Satpathi and Sandeep Mohanty
-# Description/Use-case: Use these solutions to integrate AWS Trusted Advisor with 3rd party tools, for example Slack. This is a sample project, we expect our customers to review and test it before using for production use.
+# Description: Use these solutions to integrate AWS Trusted Advisor with 3rd party tools, for example Slack. This is a reference, we expect our customers to review and test it before using for production use.
 
 Use any of these sample automated solution to integrate and get notified for AWS Trusted Advisor findings to your respecive 3rd party tools, and customers can develop their own to integrate with additional tools of their choice. 
 
