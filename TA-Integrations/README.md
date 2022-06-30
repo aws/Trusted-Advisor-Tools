@@ -7,7 +7,7 @@ Use any of these sample automated solution to integrate and get notified for AWS
 High priority Trusted Advisor checks require further investigation as they help you secure and optimize your account to align with AWS best practices. Notifications are classified by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits) and sent to your preferred monitoring or DevOps tools at a preconfigured interval. Configure the notification interval as a scheduled event rule in Amazon EventBridge. Modify the included python script to customize the solution further to meet your requirements.
 
 ## Solution Overview
-Deploying this solution automates the process of checking, and delivery of specific alerts from Trusted Advisor to with your preferred 3rd paty tools.
+Deploying this solution automates the process of checking, and delivery of specific alerts from Trusted Advisor to with your preferred 3rd party tools.
 
 ## How it works
 
