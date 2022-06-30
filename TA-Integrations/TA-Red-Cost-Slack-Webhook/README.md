@@ -1,6 +1,10 @@
-# Trusted_Advisor-Red_Findings_Slack-Webhook
-# Authors: Manas Satpathi and Sandeep Mohanty
-# Description/Use-case: Use this solution to report all RED findings from AWS Trusted Advisor for an AWS account to your preferred Slack channel. It also reports the estimated monthly savings reported by Trusted Advisor.
+## Slack Integration to post Trusted Advisor Red Findings, w/ Monthly Estimated Costs Savings in an Account
+
+##### Authors: Manas Satpathi and Sandeep Mohanty
+
+### Description/Use-case
+
+Use this solution to report all RED findings from AWS Trusted Advisor for an AWS account to your preferred Slack channel. It also reports the estimated monthly savings reported by Trusted Advisor.
 
 Use this automated solution to get notified for AWS Trusted Advisor findings with status red/error (actions required). High priority Trusted Advisor checks require further investigation as they help you secure and optimize your account to align with AWS best practices. Notifications are classified by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits) and sent to Slack at a preconfigured interval.  Configure the notification interval as a scheduled event rule in Amazon EventBridge. Modify the included python script to customize the solution further to meet your requirements.
 
@@ -11,19 +15,19 @@ Total High Risk (RED) Findings: 18 (Security: 8, Fault-Tolerance: 4, Performance
 Total Estimated Monthly Savings: $3,200.32.
 
 HIGH RISK - [security] AWS Lambda Functions Using Deprecated Runtimes
-HIGH RISK - [fault_tolerance] Amazon EBS Snapshots
-HIGH RISK - [fault_tolerance] Auto Scaling Group Resources
 HIGH RISK - [security] Security Groups - Specific Ports Unrestricted
 HIGH RISK - [security] Security Groups - Unrestricted Access
+HIGH RISK - [fault_tolerance] Amazon EBS Snapshots
+HIGH RISK - [fault_tolerance] Auto Scaling Group Resources
 
-## Solution Overview
+### Solution Overview
 Deploying this solution automates the process of checking, and delivery of RED alerts from Trusted Advisor to a preconfigured Slack channel via an incoming webhook.
 
 The following diagram illustrates how the solution works,
 
 ![image](./TA-Slack-Arch.PNG)
 
-## Prerequisites
+### Prerequisites
 Create an incoming Slack Webhook. Incoming webhooks are a simple way to post messages from 3rd party apps into Slack. Creating an incoming Webhook gives you a unique URL to which you send a JSON payload with the message text and some options. The Account you're using should have AWS Business, On-RAMP, or Enterprise Support to get the estimated monthly savings, and additional TA checks.
 
 Refer to the link below for instructions to create an incoming Slack webhook https://api.slack.com/messaging/webhooks
@@ -32,7 +36,9 @@ Copy and save the Slack webhook URL somewhere in a local text file. We will use 
 
 The webhook URL should look something like this https://hooks.slack.com/workflows/T01234ABCD/A03PQRST/12345678/ab6c20hdWBZabcd
 
-## How it works
+More information about AWS Trusted Advisor is available here: https://aws.amazon.com/premiumsupport/trustedadvisor/
+
+### How it works
     1. An EventBridge rule is configured to invoke a Lambda function on a pre-configured schedule. For example, hourly, every 12 hours,daily, etc.
 
     2. EventBridge invokes the Lambda function and passes the Slack Webhook URL as an argument to the Lambda function.The JSON input event to the Lambda function look something like this,              
@@ -44,7 +50,7 @@ The webhook URL should look something like this https://hooks.slack.com/workflow
 
     4. Lambda formats the response from Trusted Advisor, and sends a summary of all checks, along with details of all open high-risk items to Slack, organized by risk category (Security, Fault Tolerance, Performance, Cost and Service Limits).
 
-## Deploy the solution
+### Deploy the solution
 
 The solution includes the following files
 
@@ -119,11 +125,11 @@ The steps below let you manually deploy and customize the solution to meet your 
        For more information about creating an Amazon EventBridge rule that runs on a schedule, see  
        https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html
 
-## Security
+### Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
-## License
+### License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
 
