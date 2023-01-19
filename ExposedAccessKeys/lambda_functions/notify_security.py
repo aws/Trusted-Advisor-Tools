@@ -65,6 +65,10 @@ def lambda_handler(event, context):
         print("Got SlackWebhookURL {}".format(slack_webhook_url))
         notify_slack(subject, subject2)
 
+    return {
+     'statusCode': 200
+    }
+
 def generate_summary_str(summary_items):
     """ Generates formatted string containing CloudTrail summary info.
 
@@ -101,8 +105,6 @@ def publish_msg(subject, message):
         print('Could not publish message to SNS topic "{}"'.format(TOPIC_ARN))
         raise e
 
-print("============= Post to Slack ===========")
-
 def notify_slack(subject, subject2):
 
    data = "{content:" + '"' + subject + subject2 +'"}'
@@ -125,7 +127,3 @@ def notify_slack(subject, subject2):
 
    ## Receive the response
    print("RESPONSE: ", resp)
-
-   return {
-     'statusCode': 200
-   }
