@@ -38,8 +38,8 @@ If you would like to deploy the template manually, you need a S3 bucket in the t
 
 ** Note that this template may only be launched into US East - N. Virginia (us-east-1) as that is the only region where Trusted Advisor CloudWatch Event rules are configurable. **
 
-
 Set environment variables for later commands to use:
+
 
 ```bash
 S3BUCKET=[REPLACE_WITH_YOUR_BUCKET]
