@@ -110,7 +110,7 @@ Resources:
     Properties:
       Handler: delete_access_key_pair.lambda_handler
       Runtime: python3.9
-      CodeUri: s3://aws-trusted-advisor-open-source/ExposedAccessKeys/lambda_functions/delete_access_key_pair.py
+      CodeUri: s3://aws-trusted-advisor-open-source-us-east-1/ExposedAccessKeys/lambda_functions.zip
       Role: !GetAtt LambdaDeleteAccessKeyPairRole.Arn
 
   LookupCloudTrailEvents:
@@ -118,7 +118,7 @@ Resources:
     Properties:
       Handler: lookup_cloudtrail_events.lambda_handler
       Runtime: python3.9
-      CodeUri: s3://aws-trusted-advisor-open-source/ExposedAccessKeys/lambda_functions/lookup_cloudtrail_events.py
+      CodeUri: s3://aws-trusted-advisor-open-source-us-east-1/ExposedAccessKeys/lambda_functions.zip
       Role: !GetAtt LambdaLookupCloudTrailEventsRole.Arn
  
   NotifySecurity:
@@ -126,7 +126,7 @@ Resources:
     Properties:
       Handler: notify_security.lambda_handler
       Runtime: python3.9
-      CodeUri: s3://aws-trusted-advisor-open-source/ExposedAccessKeys/lambda_functions/notify_security.py
+      CodeUri: s3://aws-trusted-advisor-open-source-us-east-1/ExposedAccessKeys/lambda_functions.zip
       Role: !GetAtt LambdaSnsPublishRole.Arn
       Environment:
         Variables: 
