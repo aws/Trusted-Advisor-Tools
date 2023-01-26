@@ -23,7 +23,7 @@ This repository contains sample code for all the AWS Lambda functions depicted i
 The backend infrastructure can be deployed in US East - N. Virginia (us-east-1) using the provided CloudFormation template.
 Click **Launch Stack** to launch the template in the US East - N. Virginia (us-east-1) region in your account:
 
-[![Launch Trusted Advisor Exposed Keys CloudWatch Event Monitor into N. Virginia with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create?stackName=ExposedAccessKeysMonitor&templateURL=https://aws-trusted-advisor-open-source.s3.us-west-2.amazonaws.com/cloudformation-templates/exposed_access_keys.serverless.yaml)
+[![Launch Trusted Advisor Exposed Keys CloudWatch Event Monitor into N. Virginia with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create?stackName=ExposedAccessKeysMonitor&templateURL=https://aws-trusted-advisor-open-source-us-east-1.s3.amazonaws.com/ExposedAccessKeys/exposed_access_keys_one_click.serverless.yaml)
 
 (In the last page of the wizard, make sure to:
 
