@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  unassociated-elastic-ips
+
+  Sample SAM Template for unassociated-elastic-ips
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Architectures: 
+      - arm64
+    Timeout: 3
+    MemorySize: 128
+    Runtime: python3.10
+
+Resources:
+
+  RemoveElasticIPFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      Description: Removes unassociated elastic IP unless the IP has the tag ""
+      CodeUri: ./remove_elastic_IP/
+      Handler: app.lambda_handler
+      Policies:
+        - AWSLambdaExecute
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+              - "ec2:ReleaseAddress"
+              - "ec2:DescribeAddresses"
+              - "ec2:DescribeTags"
+              Resource: "*"
+      Events:
+        CloudWatchEvent:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source: 
+                - "aws.trustedadvisor"
+              detail-type: 
+                - "Trusted Advisor Check Item Refresh Notification"
+              detail: 
+                status: 
+                  - "WARN"
+                check-name:
+                  - "Unassociated Elastic IP Addresses"
+            State: "ENABLED"
+      
+
+
