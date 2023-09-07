@@ -1,0 +1,20 @@
+{
+    "version": "0",
+    "id": "5aafb434-a5d2-8e73-f0b0-6d21e533fb2e",
+    "detail-type": "Trusted Advisor Check Item Refresh Notification",
+    "source": "aws.trustedadvisor",
+    "account": "123456789012",
+    "time": "2023-08-28T19:39:15Z",
+    "region": "us-east-1",
+    "resources": [],
+    "detail": {
+        "check-name": "Unassociated Elastic IP Addresses",
+        "check-item-detail": {
+            "IP Address": "123.456.789.012",
+            "Region": "us-east-1"
+        },
+        "status": "WARN",
+        "resource_id": "",
+        "uuid": "22df99e5-9c89-4270-a647-34b8cd6adddc"
+    }
+}
