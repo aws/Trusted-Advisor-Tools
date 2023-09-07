@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  SetBucketVersioningFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.11
+      CodeUri: lambda/
+      Handler: app.lambda_handler
+      Events:
+        CloudWatchEvent:
+          Type: CloudWatchEvent
+          Properties: 
+            Pattern:
+              source: 
+                - "aws.trustedadvisor"
+              detail-type: 
+                - "Trusted Advisor Check Item Refresh Notification"
+              detail: 
+                status: 
+                  - "WARN"
+                check-name:
+                  - "Amazon S3 Bucket Versioning"
+            State: "ENABLED"
+      Policies: 
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "s3:PutBucketVersioning"
+                - "s3:GetBucketTagging"
+              Resource: "*"
