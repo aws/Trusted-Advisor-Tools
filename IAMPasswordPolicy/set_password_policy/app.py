@@ -19,11 +19,11 @@ def lambda_handler(event, context):
         RequireSymbols=True,
         RequireNumbers=True,
         RequireUppercaseCharacters=True,
-        exRequireLowercaseCharacters=True,
+        RequireLowercaseCharacters=True,
         AllowUsersToChangePassword=current_policy.get(
             "AllowUsersToChangePassword", True
         ),
-        PasswordReusePrevention=current_policy.get("PasswordReusePrevention", 24),
+        PasswordReusePrevention=current_policy.get("PasswordReusePrevention", 12),
         MaxPasswordAge=current_policy.get("MaxPasswordAge", 90),
         HardExpiry=current_policy.get("HardExpiry", False),
     )
