@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Runtime: python3.11
+    Architectures:
+        - arm64
+
+Resources:
+  SetPasswordPolicyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: set_password_policy/
+      Handler: app.lambda_handler
+      Policies:
+        - AWSLambdaExecute
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+              - "iam:UpdateAccountPasswordPolicy"
+              - "iam:GetAccountPasswordPolicy"
+              Resource: "*"
+      Events:
+        CloudWatchEvent:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source: 
+                - "aws.trustedadvisor"
+              detail-type: 
+                - "Trusted Advisor Check Item Refresh Notification"
+              detail: 
+                status: 
+                  - "WARN"
+                  - "ERROR"
+                check-name:
+                  - "IAM Password Policy"
+            State: "ENABLED"
+
