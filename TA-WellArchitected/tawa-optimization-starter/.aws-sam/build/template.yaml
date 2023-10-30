@@ -1,0 +1,254 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: TrustedAdvisor WAFR Starter
+Globals:
+  Function:
+    Timeout: 900
+    MemorySize: 10240
+Parameters:
+  TAResourceReportBucket:
+    Type: String
+    Description: The S3 Bucket name where trusted advisor well-architected reports
+      will be hosted ( This bucket will be created )
+  UseReportOwnURL:
+    Type: String
+    Description: 'Specify your own url prefix to access the report ( include https://
+      ). If left empty, AWS Console URL will be used. '
+  NotificationEmail:
+    Type: String
+    Description: The email to notify about the report url.
+Conditions:
+  UseConsoleReport:
+    Fn::Equals:
+    - Ref: UseReportOwnURL
+    - ''
+Resources:
+  TrustedAdvisorWAFRStarterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: TrustedAdvisorWAFRStarterFunction
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role:
+        Fn::GetAtt:
+        - TrustedAdvisorWAFRStarterFunctionRole
+        - Arn
+    Metadata:
+      SamResourceId: TrustedAdvisorWAFRStarterFunction
+  ReportEventTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: TrustedAdvisorWAFRReportEventTopic
+      Subscription:
+      - Endpoint:
+          Ref: NotificationEmail
+        Protocol: Email
+  TrustedAdvisorWAFRStarter:
+    Type: AWS::SSM::Document
+    Properties:
+      Name: TrustedAdvisor-WellArchitected-Optimization-Starter
+      DocumentType: Automation
+      Content:
+        schemaVersion: '0.3'
+        assumeRole: '{{AutomationAssumeRole}}'
+        parameters:
+          AutomationAssumeRole:
+            type: String
+            description: (Required) The Amazon Resource Name (ARN) IAM role to run
+              the runbook.
+            default:
+              Fn::GetAtt:
+              - TrustedAdvisorWAFRStarterSSMRole
+              - Arn
+          ResourceTagKey:
+            type: String
+            description: (Required) The Tag Key of AWS resources to review.
+            default: None
+          ResourceTagValue:
+            type: String
+            description: (Required) The Tag Value of AWS resources to review.
+            default: None
+          TrustedAdvisorReportingBucket:
+            type: String
+            description: '(Required) The S3 Bucket where the Trusted Advisor Report
+              will be generated. '
+            default:
+              Ref: TAResourceReportBucket
+          TrustedAdvisorReportingHost:
+            type: String
+            description: (Required) The URL of the host to access the report. ( Include
+              httos:// in the parameter)
+            default:
+              Fn::Join:
+              - ''
+              - - Fn::If:
+                  - UseConsoleReport
+                  - https://s3.console.aws.amazon.com/s3/object/
+                  - UseReportOwnURL
+                - Ref: ReportBucket
+          BestPracticeReviewName:
+            type: String
+            description: (Required) The Best Practice review name.
+          BestPracticeReviewRegion:
+            type: String
+            description: (Required) The Best Practice review region.
+            default: ap-southeast-2
+          BestPracticeReviewOwner:
+            type: String
+            description: (Required) The Best Practice review owner.
+            default: stephen
+        description: Gather Trusted Advisor lists using Python
+        mainSteps:
+        - name: InvokeTrustedAdvisorWAFRStarter
+          action: aws:executeScript
+          inputs:
+            Runtime: python3.8
+            Handler: handler
+            InputPayload:
+              ReportEventTopicArn:
+                Fn::GetAtt:
+                - ReportEventTopic
+                - TopicArn
+              AutomationExecutionId: '{{automation:EXECUTION_ID}}'
+              ResourceTagKey: '{{ResourceTagKey}}'
+              ResourceTagValue: '{{ResourceTagValue}}'
+              TrustedAdvisorReportingBucket: '{{TrustedAdvisorReportingBucket}}'
+              TrustedAdvisorReportingHost: '{{TrustedAdvisorReportingHost}}'
+              BestPracticeReviewName: '{{BestPracticeReviewName}}'
+              BestPracticeReviewRegion: '{{BestPracticeReviewRegion}}'
+              BestPracticeReviewOwner: '{{BestPracticeReviewOwner}}'
+            Script:
+              Fn::Sub:
+              - "import boto3\nimport json\ndef handler(event, context):\n  \n  pay\
+                \ = {\n          'AutomationExecutionId' : event['AutomationExecutionId'],\n\
+                \          'Parameters' : {\n              'ResourceTagKey':  event['ResourceTagKey'],\n\
+                \              'ResourceTagValue': event['ResourceTagValue'],\n  \
+                \            'TrustedAdvisorReportingBucket': event['TrustedAdvisorReportingBucket'],\n\
+                \              'TrustedAdvisorReportingHost': event['TrustedAdvisorReportingHost'],\n\
+                \              'BestPracticeReviewName': event['BestPracticeReviewName'],\n\
+                \              'BestPracticeReviewRegion': event['BestPracticeReviewRegion'],\n\
+                \              'BestPracticeReviewOwner': event['BestPracticeReviewOwner'],\n\
+                \              'ReportEventTopicArn': event['ReportEventTopicArn']\n\
+                \          }\n        }\n  \n  data = bytes(json.dumps(pay),encoding='utf-8')\n\
+                \  \n  client = boto3.client('lambda')\n  client.invoke(\n      FunctionName='${LambdaFunctionName}',\n\
+                \      InvocationType='Event',\n      Payload=data\n  )\n  return\
+                \ None"
+              - LambdaFunctionName:
+                  Ref: TrustedAdvisorWAFRStarterFunction
+        - name: WaitFunctionCompletion
+          action: aws:approve
+          timeoutSeconds: 1000
+          onFailure: Abort
+          inputs:
+            MinRequiredApprovals: 1
+            Approvers:
+            - Fn::GetAtt:
+              - TrustedAdvisorWAFRStarterFunctionRole
+              - Arn
+  TrustedAdvisorWAFRStarterSSMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: TrustedAdvisorWAFRStarterSSMRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ssm.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+    Metadata:
+      SamResourceId: TrustedAdvisorWAFRStarterSSMRole
+  TrustedAdvisorWAFRStarterRolePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: TrustedAdvisor
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - lambda:InvokeFunction
+          Resource:
+            Fn::GetAtt:
+            - TrustedAdvisorWAFRStarterFunction
+            - Arn
+      Roles:
+      - Ref: TrustedAdvisorWAFRStarterSSMRole
+    Metadata:
+      SamResourceId: TrustedAdvisorWAFRStarterSSMRolePolicy
+  TrustedAdvisorWAFRStarterFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: TrustedAdvisorWAFRStarterFunctionRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - ssm.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+  TrustedAdvisorWAFRStarterFunctionRolePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: TrustedAdvisor
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: support:DescribeTrustedAdvisorCheckResult
+          Resource: '*'
+        - Effect: Allow
+          Action:
+          - wellarchitected:CreateWorkload
+          - wellarchitected:GetLens
+          - wellarchitected:GetWorkload
+          - wellarchitected:ListAnswers
+          - wellarchitected:ListCheckDetails
+          - wellarchitected:DeleteWorkload
+          - wellarchitected:TagResource
+          - wellarchitected:UpdateAnswer
+          Resource: '*'
+        - Effect: Allow
+          Action:
+          - resourcegroupapi:ResourceGroupsTaggingAPI
+          - tag:GetResources
+          Resource: '*'
+        - Effect: Allow
+          Action:
+          - s3:PutObject
+          Resource:
+            Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - ReportBucket
+                - Arn
+              - /*
+        - Effect: Allow
+          Action:
+          - ssm:SendAutomationSignal
+          Resource: '*'
+        - Effect: Allow
+          Action:
+          - sns:Publish
+          Resource:
+            Fn::GetAtt:
+            - ReportEventTopic
+            - TopicArn
+      Roles:
+      - Ref: TrustedAdvisorWAFRStarterFunctionRole
+    Metadata:
+      SamResourceId: TrustedAdvisorWAFRStarterFunctionRolePolicy
+  ReportBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Ref: TAResourceReportBucket
