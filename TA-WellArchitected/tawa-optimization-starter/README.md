@@ -1,4 +1,4 @@
-# Trusted Advisor - Well-Architected Optimization - starter kit
+# TA-WA Optimization - starter
 
 Author / Contributor
 * Stephen Salim
@@ -6,7 +6,6 @@ Author / Contributor
 
 
 ![TA-WA-Optimizer-HighArch.png](./static/images/TA-WA-Optimizer-HighArch.png)
-
 
 
 ## What does this sample automation do ?
