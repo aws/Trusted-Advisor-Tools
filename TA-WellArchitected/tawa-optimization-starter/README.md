@@ -105,12 +105,16 @@ Below is the detailed solution's breakdown.
 
 ## Bonus Section - Eisenhower Matrix App to help prioritizing Trusted Advisor Checks results based on Business Impact and Urgency
 
+![aws_prioritization_matrix_app_sample.png](../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png)
+
 <details>
 <summary>[ Click here to expand this BONUS section ]</summary>
 
-**Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
+> [!IMPORTANT]  
+> **Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
 
-**Prerequisite:** Before proceeding with below steps, make sure you have [installed Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+> [!NOTE]
+> **Prerequisite:** Before proceeding with below steps, make sure you have [installed Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ### Option 1 - Install and Run the Eisenhower Matrix App Locally
 
@@ -174,7 +178,8 @@ npm run build
 
 Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify), you need to load the Trusted Advisor Check results gathered from the **TA-WA Optimization** automation in previous steps.
 
-**Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
+> [!IMPORTANT]
+> **Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
 
 1. Open the same S3 report link you opened during the **Step 8** under **Running Systems Manager Automation Document** section above.
 
@@ -215,7 +220,7 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
     sam delete --stack-name {{ Stack Name }}
     ```
 
-### Cleanup - Eisenhower Matrix App from Bonus section (In case deployed via AWS Amplify)
+## Cleanup - Eisenhower Matrix App from Bonus section (In case deployed via AWS Amplify)
 
 1. In the AWS Amplify Console, open your application and click on **"Actions" > "Delete app"**:
 
