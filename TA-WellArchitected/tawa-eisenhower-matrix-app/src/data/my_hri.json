@@ -1,0 +1,245 @@
+[
+    {
+        "TrustedAdvisorCheckId": "hjLMh88uM8",
+        "TrustedAdvisorCheckName": "Idle Load Balancers",
+        "TrustedAdvisorCheckDesc": "Checks your Elastic Load Balancing configuration for load balancers that are not actively used. Any load balancer that is configured accrues charges. If a load balancer has no associated back-end instances or if network traffic is severely limited, the load balancer is not being used effectively.<br />\n<br />\n<h4 class='headerBodyStyle'>Alert Criteria</h4><br />\nYellow: A load balancer has no active back-end instances.<br />\nYellow: A load balancer has no healthy back-end instances.<br />\nYellow: A load balancer has had less than 100 requests per day for the last 7 days.<br />\n<br />\n<h4 class='headerBodyStyle'>Recommended Action</h4><br />\nIf your load balancer has no active back-end instances, consider registering instances or deleting your load balancer. See <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/US_DeReg_Reg_Instances.html#RegisteringInstances\" target=\"_blank\">Registering Your Amazon EC2 Instances with Your Load Balancer</a> or <a href=\"http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-getting-started.html#delete-load-balancer\" target=\"_blank\">Delete Your Load Balancer</a>.<br />\nIf your load balancer has no healthy back-end instances, see <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ts-elb-healthcheck.html\" target=\"_blank\">Troubleshooting Elastic Load Balancing: Health Check Configuration</a>.<br />\nIf your load balancer has had a low request count, consider deleting your load balancer. See <a href=\"http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-getting-started.html#delete-load-balancer\" target=\"_blank\">Delete Your Load Balancer</a>.<br />\n<br />\n<h4 class='headerBodyStyle'>Additional Resources</h4><br />\n<a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html\" target=\"_blank\">Managing Load Balancers</a><br />\n<a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/elb-troubleshooting.html\" target=\"_blank\">Troubleshoot Elastic Load Balancing</a>",
+        "WAPillarId": "costOptimization",
+        "WAQuestionId": "decomissioning-resources",
+        "WABestPracticeId": "cost_decomissioning_resources_implement_process",
+        "WABestPracticeTitle": "Implement a decommissioning process",
+        "WABestPracticeDesc": "Implement a process to identify and decommission unused resources.",
+        "WABestPracticeRisk": "High",
+        "FlaggedResources": [
+            {
+                "status": "warning",
+                "region": "ap-southeast-2",
+                "resourceId": "uniqueId-1",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-2",
+                    "ClassicMe",
+                    "No active back-end instances",
+                    "$20.16"
+                ]
+            }
+        ]
+    },
+    {
+        "TrustedAdvisorCheckId": "Z4AUBRNSmz",
+        "TrustedAdvisorCheckName": "Unassociated Elastic IP Addresses",
+        "TrustedAdvisorCheckDesc": "Checks for Elastic IP addresses (EIPs) that are not associated with a running Amazon Elastic Compute Cloud (Amazon EC2) instance. EIPs are static IP addresses designed for dynamic cloud computing. Unlike traditional static IP addresses, EIPs can mask the failure of an instance or Availability Zone by remapping a public IP address to another instance in your account. A nominal charge is imposed for an EIP that is not associated with a running instance.<br>\n<br>\n<h4 class='headerBodyStyle'>Alert Criteria</h4><br>\nYellow: An allocated Elastic IP address (EIP) is not associated with a running Amazon EC2 instance.<br>\n<br>\n<h4 class='headerBodyStyle'>Recommended Action</h4><br>\nAssociate the EIP with a running active instance, or release the unassociated EIP. For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#using-instance-addressing-eips-associating-different\" target=\"_blank\">Associating an Elastic IP Address with a Different Running Instance</a> and <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#using-instance-addressing-eips-releasing\" target=\"_blank\">Releasing an Elastic IP Address</a>.<br>\n<br>\n<h4 class='headerBodyStyle'>Additional Resources</h4><br>\n<a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\" target=\"_blank\">Elastic IP Addresses</a>",
+        "WAPillarId": "costOptimization",
+        "WAQuestionId": "decomissioning-resources",
+        "WABestPracticeId": "cost_decomissioning_resources_implement_process",
+        "WABestPracticeTitle": "Implement a decommissioning process",
+        "WABestPracticeDesc": "Implement a process to identify and decommission unused resources.",
+        "WABestPracticeRisk": "High",
+        "FlaggedResources": [
+            {
+                "status": "warning",
+                "region": "ap-southeast-2",
+                "resourceId": "uniqueId-2",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-2",
+                    "123.123.123.123"
+                ]
+            },
+            {
+                "status": "warning",
+                "region": "us-west-2",
+                "resourceId": "uniqueId-3",
+                "isSuppressed": false,
+                "metadata": [
+                    "us-west-2",
+                    "111.111.111.111"
+                ]
+            }
+        ]
+    },
+    {
+        "TrustedAdvisorCheckId": "H7IgTzjTYb",
+        "TrustedAdvisorCheckName": "Amazon EBS Snapshots",
+        "TrustedAdvisorCheckDesc": "Checks the age of the snapshots for your Amazon Elastic Block Store (Amazon EBS) volumes (available or in-use). Even though Amazon EBS volumes are replicated, failures can occur. Snapshots are persisted to Amazon Simple Storage Service (Amazon S3) for durable storage and point-in-time recovery.<br>\n<br>\n<h4 class='headerBodyStyle'>Alert Criteria</h4><br>\nYellow: The most recent volume snapshot is between 7 and 30 days old.<br>\nRed: The most recent volume snapshot is more than 30 days old.<br>\nRed: The volume does not have a snapshot.<br>\n<br>\n<h4 class='headerBodyStyle'>Recommended Action</h4><br>\nCreate weekly or monthly snapshots of your volumes. For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-snapshot.html\" target=\"_blank\">Creating an Amazon EBS Snapshot</a>.<br>\n<br>\n<h4 class='headerBodyStyle'>Additional Resources</h4><br>\n<a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html\" target=\"_blank\">Amazon Elastic Block Store (Amazon EBS)</a>",
+        "WAPillarId": "reliability",
+        "WAQuestionId": "backing-up-data",
+        "WABestPracticeId": "rel_backing_up_data_automated_backups_data",
+        "WABestPracticeTitle": "Perform data backup automatically",
+        "WABestPracticeDesc": "Configure backups to be taken automatically based on a periodic schedule informed by the Recovery Point Objective (RPO), or by changes in the dataset. Critical datasets with low data loss requirements need to be backed up automatically on a frequent basis, whereas less critical data where some loss is acceptable can be backed up less frequently.",
+        "WABestPracticeRisk": "Medium",
+        "FlaggedResources": [
+            {
+                "status": "error",
+                "region": "ap-southeast-2",
+                "resourceId": "uniqueId-4",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-2",
+                    "vol-05991234567891",
+                    null,
+                    "snap-05991234567891",
+                    null,
+                    "243",
+                    null,
+                    "Red",
+                    "Age"
+                ]
+            },
+            {
+                "status": "error",
+                "region": "ap-southeast-2",
+                "resourceId": "uniqueId-5",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-2",
+                    "vol-08281234567892",
+                    null,
+                    null,
+                    null,
+                    null,
+                    "/dev/xvda:i-08281234567892",
+                    "Red",
+                    "No snapshot"
+                ]
+            },
+            {
+                "status": "ok",
+                "region": "us-west-2",
+                "resourceId": "uniqueId-6",
+                "isSuppressed": false,
+                "metadata": [
+                    "us-west-2",
+                    "vol-03c31234567893",
+                    null,
+                    "snap-03c31234567893",
+                    null,
+                    "1",
+                    null,
+                    "Green",
+                    "Age"
+                ]
+            }
+        ]
+    },
+    {
+        "TrustedAdvisorCheckId": "Yw2K9puPzl",
+        "TrustedAdvisorCheckName": "IAM Password Policy",
+        "TrustedAdvisorCheckDesc": "Checks the password policy for your account and warns when a password policy is not enabled, or if password content requirements have not been enabled. Password content requirements increase the overall security of your AWS environment by enforcing the creation of strong user passwords. When you create or change a password policy, the change is enforced immediately for new users but does not require existing users to change their passwords. \n<br>\n<br>\n<h4 class='headerBodyStyle'>Alert Criteria</h4><br>\nYellow: A password policy is enabled, but at least one content requirement is not enabled.  \n<br>\nRed: No password policy is enabled. \n<br>\n<br>\n<h4 class='headerBodyStyle'>Recommended Action</h4><br>\nIf some content requirements are not enabled, consider enabling them. If no password policy is enabled, create and configure one. See <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html\" target=\"_blank\">Setting an Account Password Policy for IAM Users</a>. \n<br>\n<br>\n<h4 class='headerBodyStyle'>Additional Resources</h4><br>\n<a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Credentials-ManagingPasswords.html\" target=\"_blank\">Managing Passwords</a>",
+        "WAPillarId": "security",
+        "WAQuestionId": "identities",
+        "WABestPracticeId": "sec_identities_secrets",
+        "WABestPracticeTitle": "Store and use secrets securely",
+        "WABestPracticeDesc": "A workload requires an automated capability to prove its identity to databases, resources, and third-party services. This is accomplished using secret access credentials, such as API access keys, passwords, and OAuth tokens. Using a purpose-built service to store, manage, and rotate these credentials helps reduce the likelihood that those credentials become compromised.",
+        "WABestPracticeRisk": "High",
+        "FlaggedResources": [
+            {
+                "status": "error",
+                "resourceId": "uniqueId-7",
+                "isSuppressed": false,
+                "metadata": [
+                    "Disabled",
+                    "Disabled",
+                    "Disabled",
+                    "Disabled",
+                    "Disabled",
+                    "Red",
+                    "Password policy not enabled"
+                ]
+            }
+        ]
+    },
+    {
+        "TrustedAdvisorCheckId": "R365s2Qddf",
+        "TrustedAdvisorCheckName": "Amazon S3 Bucket Versioning",
+        "TrustedAdvisorCheckDesc": "Checks for Amazon Simple Storage Service buckets that do not have versioning enabled, or have versioning suspended. When versioning is enabled, you can easily recover from both unintended user actions and application failures. Versioning allows you to preserve, retrieve, and restore any version of any object stored in a bucket. You can use lifecycle rules to manage all versions of your objects as well as their associated costs by automatically archiving objects to the Glacier storage class or removing them after a specified time period. You can also choose to require multi-factor authentication (MFA) for any object deletions or configuration changes to your buckets. <br/><br/>\nVersioning cannot be disabled after it has been enabled, but it can be suspended, which prevents new versions of objects from being created. Using versioning can increase your costs for Amazon S3, because you pay for storage of multiple versions of an object.<br/><br/>\n<h4 class='headerBodyStyle'>Alert Criteria</h4><br/>\nGreen: Versioning is enabled for the bucket.<br/>\nYellow: Versioning is not enabled for the bucket.<br/>\nYellow: Versioning is suspended for the bucket.<br/><br/>\n<h4 class='headerBodyStyle'>Recommended Action</h4><br/>\nEnable bucket versioning on most buckets to prevent accidental deletion or overwriting. See <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html\" target=\"_blank\">Using Versioning</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/manage-versioning-examples.html\" target=\"_blank\">Enabling Versioning Programmatically</a>. <br/><br/>\nIf bucket versioning is suspended, consider reenabling versioning. For information on working with objects in a versioning-suspended bucket, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/VersionSuspendedBehavior.html\" target=\"_blank\">Managing Objects in a Versioning-Suspended Bucket</a>.<br/><br/>\nWhen versioning is enabled or suspended, you can define lifecycle configuration rules to mark certain object versions as expired or to permanently remove unneeded object versions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html\" target=\"_blank\">Object Lifecycle Management</a>. <br/><br/>\nMFA Delete requires additional authentication when the versioning status of the bucket is changed or when versions of an object are deleted. It requires the user to enter credentials and a code from an approved authentication device. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html#MultiFactorAuthenticationDelete\" target=\"_blank\">MFA Delete</a>.<br/><br/>\n<h4 class='headerBodyStyle'>Additional Resources</h4><br/>\n<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/UG/BucketOperations.html\" target=\"_blank\">Working with Buckets</a>",
+        "WAPillarId": "reliability",
+        "WAQuestionId": "backing-up-data",
+        "WABestPracticeId": "rel_backing_up_data_automated_backups_data",
+        "WABestPracticeTitle": "Perform data backup automatically",
+        "WABestPracticeDesc": "Configure backups to be taken automatically based on a periodic schedule informed by the Recovery Point Objective (RPO), or by changes in the dataset. Critical datasets with low data loss requirements need to be backed up automatically on a frequent basis, whereas less critical data where some loss is acceptable can be backed up less frequently.",
+        "WABestPracticeRisk": "Medium",
+        "FlaggedResources": [
+            {
+                "status": "ok",
+                "region": "ap-northeast-1",
+                "resourceId": "uniqueId-8",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-northeast-1",
+                    "my-bucket-name",
+                    "Enabled",
+                    "No",
+                    "Green"
+                ]
+            },
+            {
+                "status": "warning",
+                "region": "ap-southeast-2",
+                "resourceId": "uniqueId-9",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-2",
+                    "my-other-bucket",
+                    "Not enabled",
+                    "No",
+                    "Yellow"
+                ]
+            }
+        ]
+    },
+    {
+        "TrustedAdvisorCheckId": "HCP4007jGY",
+        "TrustedAdvisorCheckName": "Security Groups - Specific Ports Unrestricted",
+        "TrustedAdvisorCheckDesc": "Checks security groups for rules that allow unrestricted access (0.0.0.0/0) to specific ports. Unrestricted access increases opportunities for malicious activity (hacking, denial-of-service attacks, loss of data). The ports with highest risk are flagged red, and those with less risk are flagged yellow. Ports flagged green are typically used by applications that require unrestricted access, such as HTTP and SMTP.\n<br>\nIf you have intentionally configured your security groups in this manner, we recommend using additional security measures to secure your infrastructure (such as IP tables).\n<br>\n<br>Note: This check only evaluates security groups that you create and their inbound rules for IPv4 addresses. Security groups created by AWS Directory Services are flagged as red or yellow, but they don\u2019t pose a security risk and can be safely ignored or excluded. For more information, see the <a href=\"https://aws.amazon.com/premiumsupport/faqs/#AWS_Trusted_Advisor\" target=\"_blank\">Trusted Advisor FAQ</a>.\n<br>\n<br>\n<h4 class='headerBodyStyle'>Alert Criteria</h4>\n<br>\nGreen: Access to port 80, 25, 443, or 465 is unrestricted.<br>\nRed: Access to port 20, 21, 1433, 1434, 3306, 3389, 4333, 5432, or 5500 is unrestricted.<br>\nYellow: Access to any other port is unrestricted.\n<br>\n<br>\n<h4 class='headerBodyStyle'>Recommended Action</h4>\n<br>\nRestrict access to only those IP addresses that require it. To restrict access to a specific IP address, set the suffix to /32 (for example, 192.0.2.10/32). Be sure to delete overly permissive rules after creating rules that are more restrictive.<br>\n<br>\n<h4 class='headerBodyStyle'>Additional Resources</h4><br>\n<a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html\" target=\"_blank\">Amazon EC2 Security Groups</a><br>\n<a href=\"http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers\" target=\"_blank\">List of TCP and UDP port numbers</a> (Wikipedia)<br>\n<a href=\"http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing\" target=\"_blank\">Classless Inter-Domain Routing</a> (Wikipedia)",
+        "WAPillarId": "security",
+        "WAQuestionId": "network-protection",
+        "WABestPracticeId": "sec_network_protection_layered",
+        "WABestPracticeTitle": "Control traffic at all layers",
+        "WABestPracticeDesc": "When architecting your network topology, you should examine the connectivity requirements of each component. For example, if a component requires internet accessibility (inbound and outbound), connectivity to VPCs, edge services, and external data centers.",
+        "WABestPracticeRisk": "High",
+        "FlaggedResources": [
+            {
+                "status": "warning",
+                "region": "ap-northeast-1",
+                "resourceId": "uniqueId-10",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-northeast-1",
+                    "launch-wizard-1",
+                    "sg-xyz987654321 (vpc-98765432)",
+                    "tcp",
+                    "Yellow",
+                    "22"
+                ]
+            },
+            {
+                "status": "warning",
+                "region": "ap-southeast-1",
+                "resourceId": "uniqueId-11",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-1",
+                    "launch-wizard-2",
+                    "sg-abc987654xyz (vpc-01234567)",
+                    "tcp",
+                    "Yellow",
+                    "22"
+                ]
+            },
+            {
+                "status": "warning",
+                "region": "ap-southeast-1",
+                "resourceId": "uniqueId-12",
+                "isSuppressed": false,
+                "metadata": [
+                    "ap-southeast-1",
+                    "launch-wizard-3",
+                    "sg-abc123456789 (vpc-01234567)",
+                    "tcp",
+                    "Yellow",
+                    "22"
+                ]
+            }
+        ]
+    }
+]
