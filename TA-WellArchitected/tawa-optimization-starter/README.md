@@ -110,11 +110,9 @@ Below is the detailed solution's breakdown.
 <details>
 <summary>[ Click here to expand this BONUS section ]</summary>
 
-> [!IMPORTANT]  
-> **Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
+**Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
 
-> [!NOTE]
-> **Prerequisite:** Before proceeding with below steps, make sure you have [installed Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+**Prerequisite:** Before proceeding with below steps, make sure you have [installed Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ### Option 1 - Install and Run the Eisenhower Matrix App Locally
 
@@ -178,8 +176,7 @@ npm run build
 
 Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify), you need to load the Trusted Advisor Check results gathered from the **TA-WA Optimization** automation in previous steps.
 
-> [!IMPORTANT]
-> **Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
+**Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
 
 1. Open the same S3 report link you opened during the **Step 8** under **Running Systems Manager Automation Document** section above.
 
