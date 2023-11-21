@@ -102,16 +102,6 @@ Below is the detailed solution's breakdown.
 
     <img src="./static/images/Shot08.png" width="700" />
 
-## Cleanup
-
-1. Delete the report S3 Bucket you specified **TAResourceReportBucket** during creation of the Stack.
-
-2. Run below commands to delete the stack, and select yes for all prompts to delete resource.
-
-
-    ```
-    sam delete --stack-name {{ Stack Name }}
-    ```
 
 ## Bonus Section - Eisenhower Matrix App to help prioritizing Trusted Advisor Checks results based on Business Impact and Urgency
 
@@ -212,7 +202,20 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
 
 ![aws_prioritization_matrix_app_sample_comments.png](../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample_comments.png)
 
-### Cleanup (In case deployed via AWS Amplify)
+</details>
+
+
+## Cleanup - TA-WA Optimization solution (SAM stack)
+
+1. Delete the report S3 Bucket you specified **TAResourceReportBucket** during creation of the Stack.
+
+2. Run below commands to delete the stack, and select yes for all prompts to delete resource.
+
+    ```
+    sam delete --stack-name {{ Stack Name }}
+    ```
+
+### Cleanup - Eisenhower Matrix App from Bonus section (In case deployed via AWS Amplify)
 
 1. In the AWS Amplify Console, open your application and click on **"Actions" > "Delete app"**:
 
@@ -221,7 +224,3 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
 2. In the confirmation window, type *"delete"* and click on the **"Delete"** button:
 
 ![aws_amplify_cleanup_2.png](../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_2.png)
-
-</details>
-
-
