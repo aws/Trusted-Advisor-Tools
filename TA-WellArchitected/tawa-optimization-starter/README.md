@@ -121,7 +121,7 @@ Below is the detailed solution's breakdown.
 </center>
 
 In this section you will be deploying a react based prioritization tool, loosely inspired by **Eisenhower Matix**. 
-This tool takes input of the JSON file produced by the starter kit above, and allow you to visualize each improvement opportunities and assist with your prioritization.
+This tool takes input of the JSON file produced by the starter kit above, and allow you to visualize each improvement opportunities to assist with your prioritization.
 
 **Eisenhower Matix** is a productivity, prioritization, and time-management framework designed to help you prioritize a list of tasks or agenda items by first categorizing those items according to their urgency and importance.
 
