@@ -103,9 +103,25 @@ Below is the detailed solution's breakdown.
     <img src="./static/images/Shot08.png" width="700" />
 
 
+## Cleanup - TA-WA Optimization solution (SAM stack)
+
+1. Delete the report S3 Bucket you specified **TAResourceReportBucket** during creation of the Stack.
+
+2. Run below commands to delete the stack, and select yes for all prompts to delete resource.
+
+    ```
+    sam delete --stack-name {{ Stack Name }}
+    ```
+
+
+----------
+
+
+
+
 # [ Optional ] - Deploy prioritization tool ( Eisenhower Matrix ) 
 
-<center><img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="800" /></center>center>
+<center><img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="900" /></center>
 
 In this section you will be deploying a react based prioritization tool, loosely inspired by **Eisenhower Matix**. 
 This tool takes input of the JSON file produced by the starter kit above, and allow you to visualize each improvement opportunities and assist with your prioritization.
@@ -209,18 +225,6 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
 
 ![aws_prioritization_matrix_app_sample_comments.png](../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample_comments.png)
 
-</details>
-
-
-## Cleanup - TA-WA Optimization solution (SAM stack)
-
-1. Delete the report S3 Bucket you specified **TAResourceReportBucket** during creation of the Stack.
-
-2. Run below commands to delete the stack, and select yes for all prompts to delete resource.
-
-    ```
-    sam delete --stack-name {{ Stack Name }}
-    ```
 
 ## Cleanup - Eisenhower Matrix App from Bonus section (In case deployed via AWS Amplify)
 
@@ -231,3 +235,6 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
 2. In the confirmation window, type *"delete"* and click on the **"Delete"** button:
 
 ![aws_amplify_cleanup_2.png](../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_2.png)
+
+
+</details>
