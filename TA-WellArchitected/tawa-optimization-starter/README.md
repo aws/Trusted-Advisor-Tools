@@ -120,28 +120,7 @@ This tool takes input of the JSON file produced by the starter kit above, and al
 
 **Prerequisite:** Before proceeding with below steps, make sure you have [installed Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
-### Option 1 - Install and Run the Eisenhower Matrix App Locally
-
-1. Navigate to the Eisenhower Matrix App directory from your local copy of this repository ``/Trusted-Advisor-Tools/TA-WellArchitected/tawa-eisenhower-matrix-app``.
-
-E.g. If your current directory is ``tawa-optimization-starter``, navigate to the right directory as below:
-
-```
-cd ..
-
-cd tawa-eisenhower-matrix-app
-```
-
-2. Install dependencies and start the application:
-```
-npm install
-
-npm run start
-```
-
-3. Open the Eisenhower Matrix App a web browser via: http://localhost:3000
-
-### Option 2 - Host the Eisenhower Matrix App in AWS Amplify Hosting
+### Host the Eisenhower Matrix App in AWS Amplify Hosting
 
 1. Navigate to the Eisenhower Matrix App directory from your local copy of this repository ``/Trusted-Advisor-Tools/TA-WellArchitected/tawa-eisenhower-matrix-app``.
 
@@ -210,7 +189,7 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
     <img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample_comments.png" width="700" />
 
 
-## Cleanup - Eisenhower Matrix App from Bonus section (In case deployed via AWS Amplify)
+## Cleanup - Deleting the Eisenhower Matrix App from AWS Amplify
 
 1. In the AWS Amplify Console, open your application and click on **"Actions" > "Delete app"**:
 
