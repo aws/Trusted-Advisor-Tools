@@ -103,27 +103,15 @@ Below is the detailed solution's breakdown.
     <img src="./static/images/Shot08.png" width="700" />
 
 
-## Cleanup - TA-WA Optimization solution (SAM stack)
-
-1. Delete the report S3 Bucket you specified **TAResourceReportBucket** during creation of the Stack.
-
-2. Run below commands to delete the stack, and select yes for all prompts to delete resource.
-
-    ```
-    sam delete --stack-name {{ Stack Name }}
-    ```
-
-
 # [ Optional ] - Deploy prioritization tool  
 
-<center>
-    <img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="800" />
-</center>
+    <img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="1000" />
 
-In this section you will be deploying a react based prioritization tool, loosely inspired by **Eisenhower Matix**. 
+
+In this section you will be deploying a react based prioritization tool, loosely inspired by **Eisenhower Matrix**. 
 This tool takes input of the JSON file produced by the starter kit above, and allow you to visualize each improvement opportunities to assist with your prioritization.
 
-**Eisenhower Matix** is a productivity, prioritization, and time-management framework designed to help you prioritize a list of tasks or agenda items by first categorizing those items according to their urgency and importance.
+**Eisenhower Matrix** is a productivity, prioritization, and time-management framework designed to help you prioritize a list of tasks or agenda items by first categorizing those items according to their urgency and importance.
 
 <details>
 <summary>[ Click here to expand instructions ]</summary>
@@ -231,6 +219,16 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
 2. In the confirmation window, type *"delete"* and click on the **"Delete"** button:
 
     <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_2.png" width="500" />
-
-
+    
 </details>
+
+
+## Cleanup - TA-WA Optimization solution (SAM stack)
+
+1. Delete the report S3 Bucket you specified **TAResourceReportBucket** during creation of the Stack.
+
+2. Run below commands to delete the stack, and select yes for all prompts to delete resource.
+
+    ```
+    sam delete --stack-name {{ Stack Name }}
+    ```
