@@ -105,19 +105,15 @@ Below is the detailed solution's breakdown.
 
 # [ Optional ] - Deploy prioritization tool ( Eisenhower Matrix ) 
 
-    <img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="500" />
+<img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="500" />
 
 In this section you will be deploying a react based prioritization tool, loosely inspired by Eisenhower Matix. 
 This tool takes input of the JSON file produced by the starter kit above, and allow you to visualize each improvement opportunities and assist with your prioritization.
 
 Eisenhower Matix is a productivity, prioritization, and time-management framework designed to help you prioritize a list of tasks or agenda items by first categorizing those items according to their urgency and importance.
 
-
-
-App to help prioritizing Trusted Advisor Checks results based on Business Impact and Urgency
-
 <details>
-<summary>[ Click here to expand this BONUS section ]</summary>
+<summary>[ Click here to expand instructions ]</summary>
 
 **Important Note:** This Eisenhower Matrix App is a react front-end only application. This means that no data is stored in any backend server or component while using the app (all data remains client side).
 
