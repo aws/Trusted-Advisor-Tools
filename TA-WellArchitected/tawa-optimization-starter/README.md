@@ -114,14 +114,11 @@ Below is the detailed solution's breakdown.
     ```
 
 
-----------
-
-
-
-
 # [ Optional ] - Deploy prioritization tool  
 
-<center><img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="800" /></center>
+<center>
+    <img src="../tawa-eisenhower-matrix-app/static/images/aws_prioritization_matrix_app_sample.png" width="800" />
+</center>
 
 In this section you will be deploying a react based prioritization tool, loosely inspired by **Eisenhower Matix**. 
 This tool takes input of the JSON file produced by the starter kit above, and allow you to visualize each improvement opportunities and assist with your prioritization.
