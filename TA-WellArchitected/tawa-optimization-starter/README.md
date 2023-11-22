@@ -214,11 +214,11 @@ Now that the Eisenhower Matrix App is running (either locally or via AWS Amplify
 
 1. In the AWS Amplify Console, open your application and click on **"Actions" > "Delete app"**:
 
-    <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_1.png" width="700" />
+    <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_1.png" width="500" />
 
 2. In the confirmation window, type *"delete"* and click on the **"Delete"** button:
 
-    <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_2.png" width="700" />
+    <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_cleanup_2.png" width="500" />
     
 </details>
 
