@@ -12,7 +12,7 @@ Choose **Launch Stack** to launch the CloudFormation template in the US East (N.
 [![Launch Stop Low Utilization EC2 Instances](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=TAS3BucketVersioning&templateURL=https://s3-us-west-2.amazonaws.com/aws-trusted-advisor-open-source/cloudformation-templates/TAS3BucketVersioning.json)
 
 #### AWS SAM
-If you havent already, [install AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html). Ensure you are in the `UnassociatedElasticIPs` folder then `build` and `deploy` your package
+If you havent already, [install AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html). Ensure you are in the `S3BucketVersioning` folder then `build` and `deploy` your package
 
 ```bash
 cd S3BucketVersioning
@@ -27,7 +27,7 @@ S3BUCKET=[REPLACE_WITH_YOUR_BUCKET]
 Ensure you are in the `S3BucketVersioning` folder and use the `aws cloudformation package` utility
 
 ```bash
-cd UnassociatedElasticIPs
+cd S3BucketVersioning
 
 aws cloudformation package --region us-east-1 --s3-bucket $S3BUCKET --template template.yaml --output-template-file template.output.yaml
 ```
