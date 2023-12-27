@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "RemoveIdleDBInstances"
+resolve_s3 = true
+s3_prefix = "RemoveIdleDBInstances"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+parameter_overrides = "MINAGE=\"7\" TERMINATIONMETHOD=\"delete\" SNSTOPICARN=\"arn:aws:sns:us-east-1:806173408779:email-paul\""
