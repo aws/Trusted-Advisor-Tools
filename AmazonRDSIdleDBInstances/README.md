@@ -17,29 +17,11 @@
 ### Installation
 
 #### AWS SAM
-If you havent already, [install AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html). Ensure you are in the `AMAZONRDSIDLEDBINSTANCES` folder then `build` and `deploy` your package
+If you havent already, [install AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html). Ensure you are in the `AmazonRDSIdleDBInstances` folder then `build` and `deploy` your package
 
 ```bash
-cd AMAZONRDSIDLEDBINSTANCES
+cd AmazonRDSIdleDBInstances
 sam build && sam deploy -g
-```
-
-#### Cloudformation - CLI
-```bash
-S3BUCKET=[REPLACE_WITH_YOUR_BUCKET]
-```
-
-Ensure you are in the `AMAZONRDSIDLEDBINSTANCES` folder and use the `aws cloudformation package` utility
-
-```bash
-cd AMAZONRDSIDLEDBINSTANCES
-
-aws cloudformation package --region us-east-1 --s3-bucket $S3BUCKET --template template.yaml --output-template-file template.output.yaml
-```
-Last, deploy the stack with the resulting yaml (`template.output.yaml`) through the CloudFormation Console or command line:
-
-```bash
-aws cloudformation deploy --region us-east-1 --template-file template.output.yaml --stack-name amazon-rds-idle-db-instances --capabilities CAPABILITY_NAMED_IAM
 ```
 
 
