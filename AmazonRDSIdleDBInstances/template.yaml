@@ -1,0 +1,71 @@
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Architectures:
+      - "arm64"
+    Runtime: python3.11
+
+
+Parameters:
+  MINAGE: 
+    Type: Number
+    Default: "14"
+    Description: "Minimum time since last connection in days. Valid values are between 7-14"
+    MinValue: "7"
+    MaxValue: "14"
+    ConstraintDescription: "Must be between 7 and 14"
+  TERMINATIONMETHOD:
+    Type: String
+    Default: "delete"
+    Description: "Method to use to terminate idle RDS instances. Valid values are 'delete' or 'stop'"
+    AllowedValues:
+      - "delete"
+      - "stop"
+    ConstraintDescription: "Must be either 'delete' or 'stop'"
+  SNSTOPICARN:
+    Type: String
+    Description: "SNS Topic ARN to send notifications to. If left blank, this will be skipped"
+    Default: ""
+    ConstraintDescription: "Must be a valid SNS Topic ARN"
+    
+
+
+Resources:
+  RemoveIdleRDSDatabases:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: remove_idle_rds_databases.lambda_handler
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref SNSTOPICARN
+          MIN_AGE: !Ref MINAGE
+          TERMINATION_METHOD: !Ref TERMINATIONMETHOD
+          ACCOUNT_ID: !Ref AWS::AccountId
+      Policies:
+        - Statement:
+            - Sid: AllowRDSTermination
+              Effect: Allow
+              Action:
+                - rds:StopDBInstance
+                - rds:DeleteDBInstance
+              Resource: "*"
+            - Sid: AllowSNSPublish
+              Effect: Allow
+              Action: sns:Publish
+              Resource: !Ref SNSTOPICARN
+      Events:
+        CloudWatchEvent:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source:
+                - aws.trustedadvisor
+              detail-type:
+                - "Trusted Advisor Check Item Refresh Notification"
+              detail:
+                check-name:
+                  - "Amazon RDS Idle DB Instances"
+                check-status:
+                  - "WARN"
