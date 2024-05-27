@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import _ from "lodash";
+import { map, range } from "lodash-es";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { copyToClipboard, replaceHtmlTags } from './utils/utilities';
 import { Button, Container, SpaceBetween, Header, Badge, Popover, StatusIndicator, ButtonDropdown,
@@ -466,7 +466,7 @@ export default class ToolboxLayout extends React.Component {
   }
 
   generateDOM() {
-    return _.map(this.state.layouts[this.state.currentBreakpoint], l => {
+    return map(this.state.layouts[this.state.currentBreakpoint], l => {
       return (
         <div key={l.i}>
           <div className="hide-button">
@@ -786,7 +786,7 @@ function generateLayout(uploaded=false,risksData=null) {
         return [];
     } else {
       let risksLength = risksData.length;
-      return _.map(_.range(0, risksLength), function(item, i) {
+      return map(range(0, risksLength), function(item, i) {
           return {
           x: 5,
           y: 9,
