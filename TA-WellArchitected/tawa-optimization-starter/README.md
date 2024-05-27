@@ -142,15 +142,22 @@ This tool takes input of the JSON file produced by the starter kit above, and al
     npm run build
     ```
 
-4. Open the [AWS Amplify Console](https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/) and click on **"Get Started"** for using Amplify Hosting. Or, if this is not your first AWS Amplify app, click on **"New app" > "Host web app"**:
+3. Navigate into the ``/build`` directory, and zip its content into a zipped file named ``build-eisenhower.zip``
+
+    ```
+    cd build
+    zip -r build-eisenhower.zip .
+    ```
+
+4. Open the [AWS Amplify Console](https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/) and click on **"Create new app"** for using Amplify Hosting:
 
     <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_get_started_1.png" width="700" />
 
-5. Select **Deploy without Git provider**:
+5. Select **Deploy without Git**:
 
     <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_get_started_2.png" width="700" />
 
-6. In the **Manual deploy** page, fill in the **App name** and **Environment name** fields. For **Method**, select **"Drag and drop"**. Drag and drop the ``/build`` directory created before into the section, and click on **Save and deploy**:
+6. In the **Manual deploy** page, fill in the **App name** and **Branch name** fields. For **Method**, select **"Drag and drop"**. Drag and drop the ``/build/build-eisenhower.zip`` zipped file created before into the section, and click on **Save and deploy**:
 
     <img src="../tawa-eisenhower-matrix-app/static/images/aws_amplify_get_started_3.png" width="700" />
 
