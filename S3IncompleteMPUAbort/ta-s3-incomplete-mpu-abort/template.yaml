@@ -8,14 +8,14 @@ Description: >
 Globals:
   Function:
     Timeout: 60  # Increased timeout to allow for cross-account operations
-    MemorySize: 256
+    MemorySize: 128
 
 Resources:
   ApplyLifecycleFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: apply_lifecycle_function
-      Handler: app.lambda_handler
+      Handler: apply_lifecycle.app.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64

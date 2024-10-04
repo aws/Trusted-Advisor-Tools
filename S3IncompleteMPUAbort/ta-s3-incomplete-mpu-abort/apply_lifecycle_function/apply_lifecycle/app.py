@@ -25,7 +25,7 @@ def lambda_handler(event, context):
     ta_state_change_notification: TAStateChangeNotification = aws_event.detail
 
     # Execute business logic
-    process_ta_notification(ta_state_change_notification)
+    process_ta_notification(ta_state_change_notification, aws_event)
 
     # Make updates to event payload
     aws_event.detail_type = "TALifecyclePolicyFunction processed event of " + aws_event.detail_type
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     # Return event for further processing
     return Marshaller.marshall(aws_event)
 
-def process_ta_notification(notification: TAStateChangeNotification):
+def process_ta_notification(notification: TAStateChangeNotification, aws_event: AWSEvent):
     if notification.check_name != "Amazon S3 Bucket Lifecycle Configuration":
         print(f"Ignoring notification for check: {notification.check_name}")
         return
@@ -84,6 +84,7 @@ def apply_lifecycle_policy(account_id, bucket_name):
         new_rule = {
             'ID': 'AbortIncompleteMultipartUploads',
             'Status': 'Enabled',
+            'Filter': {}, 
             'AbortIncompleteMultipartUpload': {
                 'DaysAfterInitiation': 7
             }
