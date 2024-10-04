@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ta-s3-incomplete-mpu-abort
+
+  SAM Template for ta-s3-incomplete-mpu-abort to apply lifecycle policies based on Trusted Advisor notifications
+
+Globals:
+  Function:
+    Timeout: 60  # Increased timeout to allow for cross-account operations
+    MemorySize: 256
+
+Resources:
+  ApplyLifecycleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: apply_lifecycle_function
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Events:
+        TrustedAdvisorNotification:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source:
+                - aws.trustedadvisor
+              detail-type:
+                - Trusted Advisor Check Item Refresh Notification
+              detail:
+                status:
+                  - WARN
+                check-name:
+                  - Amazon S3 Bucket Lifecycle Configuration
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Resource: 'arn:aws:iam::*:role/CrossAccountS3AccessRole'
+
+Outputs:
+  ApplyLifecycleFunction:
+    Description: "S3 incomplete Multi-part uploads fix (Apply Lifecycle Function) ARN"
+    Value: !GetAtt ApplyLifecycleFunction.Arn
+  ApplyLifecycleFunctionIamRole:
+    Description: "Implicit IAM Role created for Apply Lifecycle function"
+    Value: !GetAtt ApplyLifecycleFunctionRole.Arn

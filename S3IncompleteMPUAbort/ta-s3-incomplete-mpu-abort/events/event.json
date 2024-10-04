@@ -1,0 +1,23 @@
+{
+  "version": "0",
+  "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+  "detail-type": "Trusted Advisor Check Item Refresh Notification",
+  "source": "aws.trustedadvisor",
+  "account": "123456789012",
+  "time": "2023-04-15T10:30:00Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "check-name": "Amazon S3 Bucket Lifecycle Configuration",
+    "check-item-detail": {
+      "Status": "Yellow",
+      "Region": "us-east-1",
+      "Bucket Name": "example-bucket",
+      "Lifecycle Rule for Deleting Incomplete MPU": "No",
+      "Days After Initiation": ""
+    },
+    "status": "WARN",
+    "resource_id": "arn:aws:s3:::example-bucket",
+    "uuid": "c1cj39rr6v-1234-5678-9abc-def012345678"
+  }
+}
