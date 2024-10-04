@@ -18,7 +18,7 @@ Resources:
       Handler: apply_lifecycle.app.lambda_handler
       Runtime: python3.12
       Architectures:
-        - x86_64
+        - arm64
       Events:
         TrustedAdvisorNotification:
           Type: CloudWatchEvent
