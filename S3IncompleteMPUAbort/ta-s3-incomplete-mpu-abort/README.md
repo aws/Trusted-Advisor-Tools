@@ -9,8 +9,7 @@ You can automatically apply appropriate lifecycle policies to S3 buckets when re
 ### CloudFormation Launch Stack
 Choose **Launch Stack** to launch the CloudFormation template in the US East (N. Virginia) Region in your account:
 
-[Launch Stack Button Placeholder]
-
+[![Launch Stop Low Utilization EC2 Instances](../images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=TAS3BucketVersioning&templateURL=https://aws-trusted-advisor-open-source.s3.us-west-2.amazonaws.com/cloudformation-templates/ta-s3-incomplete-mpu-abort/template.yaml)
 ### AWS SAM
 If you haven't already, [install AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html). Ensure you are in the `ta-s3-incomplete-mpu-abort` folder then `build` and `deploy` your package:
 
