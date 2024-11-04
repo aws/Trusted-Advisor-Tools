@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Trusted Advisor Responder (infra setup) - Only to be deploy if Security Hub and AWS Config is NOT already enable in a particular account and region. This templates creates the necessary resources to enable Security Hub and AWS Config in the region where the stack is deployed.
+
+Parameters:
+  EnvironmentName:
+    Description: Environment name that is prefixed to resource names
+    Type: String
+    Default: taresponder-infra-setup
+
+Resources:
+  ConfigBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub 'config-bucket-${EnvironmentName}-${AWS::AccountId}-${AWS::Region}'
+
+  ConfigRecorder:
+    DependsOn: ConfigBucket
+    Type: AWS::Config::ConfigurationRecorder
+    Properties:
+      Name: !Sub '${EnvironmentName}-${AWS::Region}'
+      RecordingGroup:
+        AllSupported: true
+      RoleARN:
+        Fn::GetAtt:
+          - ConfigRole
+          - Arn
+
+  DeliveryChannel:
+    DependsOn: ConfigBucket
+    Type: AWS::Config::DeliveryChannel
+    Properties:
+      ConfigSnapshotDeliveryProperties:
+        DeliveryFrequency: "One_Hour"
+      S3BucketName: !Ref ConfigBucket
+
+  ConfigRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ConfigRecorderRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: config.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWS_ConfigRole'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+
+  MySecurityHub:
+    DependsOn: ConfigRecorder
+    Type: AWS::SecurityHub::Hub
+    Properties:
+      EnableDefaultStandards: true
+      ControlFindingGenerator: 'SECURITY_CONTROL'
