@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  LambdaS3PermissionsMonitorRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Sid: AllowLambdaServiceToAssumeRole
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - s3:PutBucketAcl
+            - s3:GetBucketAcl
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: GetPutS3BucketACLs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sns:Publish
+            Effect: Allow
+            Resource:
+              Ref: NotificationTopic
+          Version: '2012-10-17'
+        PolicyName: PublishToSNSTopic
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: WriteToCWLogs
+    Type: AWS::IAM::Role
+  NotificationTopic:
+    Properties:
+      DisplayName: SecurityNotificationTopic
+    Type: AWS::SNS::Topic
+  S3PermissionsMonitor:
+    Properties:
+      CodeUri: s3://robpercaws-test/2e4085fdfca9ef84e8f75af2ee0740a5
+      Environment:
+        Variables:
+          TOPIC_ARN:
+            Ref: NotificationTopic
+      Events:
+        Rule:
+          Properties:
+            Pattern:
+              detail:
+                check-name:
+                - Amazon S3 Bucket Permissions
+                status:
+                - ERROR
+                - WARN
+              detail-type:
+              - Trusted Advisor Check Item Refresh Notification
+              source:
+              - aws.trustedadvisor
+          Type: CloudWatchEvent
+      Handler: s3_monitor_permissions.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaS3PermissionsMonitorRole
+        - Arn
+      Runtime: python3.6
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
