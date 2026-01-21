@@ -5,7 +5,7 @@
   "dependencies": {
     "@cloudscape-design/components": "^3.0.416",
     "@cloudscape-design/global-styles": "^1.0.15",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-grid-layout": "^1.4.2"
