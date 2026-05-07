@@ -43,4 +43,4 @@ def test_cross_stack_references():
 
     # Verify Storage stack has the bucket
     storage_template = Template.from_stack(storage)
-    storage_template.resource_count_is("AWS::S3::Bucket", 1)
+    storage_template.resource_count_is("AWS::S3::Bucket", 2)

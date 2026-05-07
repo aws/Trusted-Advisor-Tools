@@ -9,7 +9,7 @@ def test_storage_stack_creates_bucket():
     stack = QuotaAgentStorageStack(app, "TestStorageStack")
     template = Template.from_stack(stack)
 
-    template.resource_count_is("AWS::S3::Bucket", 1)
+    template.resource_count_is("AWS::S3::Bucket", 2)
     template.has_resource_properties("AWS::S3::Bucket", {
         "VersioningConfiguration": {"Status": "Enabled"},
         "PublicAccessBlockConfiguration": {
@@ -41,5 +41,6 @@ def test_storage_stack_outputs():
     stack = QuotaAgentStorageStack(app, "TestStorageStack")
     template = Template.from_stack(stack)
 
-    template.has_output("DataBucketArn", {})
     template.has_output("DataBucketName", {})
+    template.has_output("FileSystemId", {})
+    template.has_output("AccessPointId", {})
