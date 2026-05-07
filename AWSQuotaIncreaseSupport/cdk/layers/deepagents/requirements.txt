@@ -1,0 +1,9 @@
+# Runtime dependencies for the deepagents Lambda layer.
+#
+# deepagents SDK provides the agent framework (planning, filesystem tools,
+# shell execution, skills, memory). langchain-aws adds Amazon Bedrock
+# support so the agent authenticates via IAM (no API key needed).
+#
+# Build with: ./build.sh
+deepagents==0.5.5
+langchain-aws==1.4.5

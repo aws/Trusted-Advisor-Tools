@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+
+# Virtual environments
+.venv/
+venv/
+
+# CDK
+cdk.out/
+cdk-outputs.json
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
