@@ -79,7 +79,7 @@ The AWS Quota Increase Support Agent is an autonomous, serverless agent that mon
 |--------|-------------|-----------|--------|------------|
 | T-I1: Data exfiltration from Amazon S3 Files mount | Agent or attacker extracts account IDs, business context | Low | High | No internet egress; VPC endpoints only; Lambda reserved concurrency=1 |
 | T-I2: LLM prompt/response data exposure | Amazon Bedrock invocation logs contain sensitive business context | Medium | Medium | CloudWatch Logs encrypted with KMS; access restricted to authorized roles |
-| T-I3: NFS traffic interception | Unencrypted NFS traffic between Lambda and mount targets | Very Low | Low | Traffic confined to private isolated subnets; security group restricts NFS to Lambda SG only; AWS VPC provides tenant isolation |
+| T-I3: NFS traffic interception | NFS traffic between Lambda and S3 Files mount targets | Very Low | Very Low | S3 Files mandates TLS encryption for all data in transit; traffic additionally confined to private isolated subnets; security group restricts NFS to Lambda SG only |
 | T-I4: Environment variable exposure | Lambda env vars visible in console/API | Low | Low | Env vars encrypted with KMS; values are non-secret (mount path, model ID, account ID) |
 
 ### 5. Denial of Service

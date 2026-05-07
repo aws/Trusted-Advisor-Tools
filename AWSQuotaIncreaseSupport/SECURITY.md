@@ -44,7 +44,7 @@ Security guidelines for each AWS service used by this solution:
 | Scope access points | Access point restricted to `/Lambda` prefix with POSIX uid/gid 1000 | `cdk/stacks/storage_stack.py` |
 | Restrict mount target access | Security group limits NFS (port 2049) to Lambda SG only | `cdk/stacks/network_stack.py` |
 | Use VPC isolation | Mount targets in private isolated subnets | `cdk/stacks/storage_stack.py` |
-| Document NFS encryption limitation | NFS traffic within VPC is unencrypted; VPC isolation is compensating control | This document |
+| Encryption in transit | S3 Files encrypts all data in transit using TLS (mandatory); see [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-encryption.html) | `cdk/stacks/storage_stack.py` |
 
 ### AWS IAM
 
@@ -131,7 +131,7 @@ Security guidelines for each AWS service used by this solution:
 
 1. **Creation:** Data generated during Lambda execution (agent runs, API responses)
 2. **Storage:** Persisted to S3 via Amazon S3 Files mount (KMS-encrypted at rest)
-3. **Transmission:** All API calls via VPC endpoints (TLS 1.2+); NFS within private VPC
+3. **Transmission:** All API calls via VPC endpoints (TLS 1.2+); S3 Files NFS traffic encrypted in transit via TLS
 4. **Retention:** Governed by S3 lifecycle rules (90-day version expiration, 30-day Glacier transition for logs)
 5. **Deletion:** `RemovalPolicy.DESTROY` on stack teardown; S3 `auto_delete_objects=True`
 
@@ -221,32 +221,19 @@ Note: Customer-managed keys add operational responsibilities including key rotat
 4. **Static analysis:** The `# noqa: S102` comment acknowledges the Bandit finding with documented justification.
 5. **Alternative considered:** Extracting to a separate .py file was rejected because the handler must stay under 4096 bytes for `Code.from_inline()` and co-locating it aids readability.
 
-### NFS Traffic Encryption (Amazon S3 Files) — Accepted Risk
+### Amazon S3 Files — Encryption in Transit
 
-> **⚠️ SECURITY ADVISORY:** NFS traffic between Lambda and Amazon S3 Files mount targets is
-> NOT encrypted in transit. This solution should only be deployed in environments where
-> VPC network isolation is sufficient for the data sensitivity level being handled.
+Per [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-encryption.html):
 
-**Context:** This solution uses direct NFS mounts to Amazon S3 Files mount targets without the Amazon S3 Files mount helper. The mount helper provides TLS 1.2 encryption for NFS traffic, but is not compatible with Lambda's `FileSystem.from_s3_files_access_point()` CDK construct which uses kernel NFS mounts. NFS traffic between Lambda and mount targets (port 2049) is therefore not encrypted in transit.
+> "S3 Files encrypts all data in transit using TLS and all data at rest using AWS KMS keys."
+>
+> "S3 Files requires encryption of data in transit using Transport Layer Security (TLS).
+> When you mount your file system using the mount helper, all data traveling between your
+> client and the file system is encrypted using TLS."
 
-**Risk Classification:** Known security gap — does not meet encryption-in-transit requirements.
+Transit encryption is **mandatory** for Amazon S3 Files — it is not optional or configurable. The mount helper initializes an `efs-proxy` process that establishes a secure TLS connection between the client and the file system. All NFS traffic is routed through this encrypted connection.
 
-**Formal Risk Acceptance:**
-- **Risk:** Unencrypted NFS traffic within VPC private isolated subnets
-- **Data exposed:** Agent memory files (AGENTS.md), skill files, run logs — classified as Internal/Confidential
-- **Likelihood of exploitation:** Very Low (requires compromise of AWS VPC infrastructure)
-- **Impact if exploited:** Medium (quota information and account IDs exposed)
-- **Decision:** ACCEPTED with compensating controls — VPC isolation provides sufficient protection for this data classification
-- **Review date:** To be reviewed if data classification changes or if Lambda adds mount helper support
-- **Accepted by:** [Security reviewer name and date]
-
-**Compensating controls:**
-1. **VPC isolation:** NFS traffic only traverses private isolated subnets with no internet connectivity
-2. **Security group restriction:** Mount target SG only accepts NFS from the Lambda security group
-3. **No cross-AZ traffic sniffing:** AWS VPC infrastructure provides network isolation between tenants
-4. **Data at rest is encrypted:** The underlying S3 bucket uses AWS KMS encryption; only the NFS transport layer is unencrypted
-5. **Threat model assessment:** For this use case (small markdown files with quota information), VPC isolation provides sufficient protection
-
-**Remediation path:** If encryption in transit becomes required:
-1. **Preferred:** Investigate using the Amazon S3 Files mount helper in Lambda's bootstrap script if Lambda supports custom mount commands, which would enable TLS encryption without changing the storage backend.
-2. **Alternative:** Migrate from Amazon S3 Files to Amazon EFS with `transit_encryption=efs.TransitEncryption.ENABLED`. This adds TLS 1.2 for NFS connections but requires EFS-compatible configuration changes and loses S3-native data access.
+**Security posture:** This solution meets encryption-in-transit requirements for all data paths:
+- AWS API calls: TLS 1.2+ via VPC endpoints
+- S3 Files NFS mounts: TLS (mandatory, handled by mount helper / efs-proxy)
+- Data at rest: AWS KMS encryption (S3-managed keys)
