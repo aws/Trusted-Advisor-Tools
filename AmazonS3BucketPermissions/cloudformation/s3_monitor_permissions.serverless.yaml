@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+
+ 
+  S3PermissionsMonitor:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: s3_monitor_permissions.lambda_handler
+      Runtime: python3.6
+      CodeUri: ../lambda_functions/
+      Role: !GetAtt LambdaS3PermissionsMonitorRole.Arn
+      Environment:
+        Variables: 
+          TOPIC_ARN: !Ref NotificationTopic
+      Events:
+        Rule:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source: 
+                - "aws.trustedadvisor"
+              detail-type: 
+                - "Trusted Advisor Check Item Refresh Notification"
+              detail: 
+                status: 
+                  - "ERROR"
+                  - "WARN"
+                check-name:
+                  - "Amazon S3 Bucket Permissions" 
+
+  LambdaS3PermissionsMonitorRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Sid: "AllowLambdaServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Path: "/"
+      Policies:
+        -
+          PolicyName: "GetPutS3BucketACLs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "s3:PutBucketAcl"
+                  - "s3:GetBucketAcl"
+                Resource: "*"
+        -
+          PolicyName: "PublishToSNSTopic"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "sns:Publish"
+                Resource: !Ref NotificationTopic
+        -
+          PolicyName: "WriteToCWLogs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:CreateLogGroup"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+
+  NotificationTopic:
+    Type: "AWS::SNS::Topic"
+    Properties: 
+      DisplayName: "SecurityNotificationTopic"
